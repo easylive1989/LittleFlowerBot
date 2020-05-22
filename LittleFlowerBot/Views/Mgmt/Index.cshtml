@@ -1,0 +1,29 @@
+@model LittleFlowerBot.Models.ViewModels.MgmtIndexModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+    <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+    <div id="twitchpanel"></div>
+    <script type="text/javascript">
+      var options = {
+        width: 500,
+        height: 500,
+        channel: "easylive1989",
+      };
+      var player = new Twitch.Player("twitchpanel", options);
+      player.setVolume(0.5);
+    </script>
+</head>
+<body>
+<div>
+      
+</div>
+</body>
+</html>
