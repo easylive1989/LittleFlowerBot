@@ -1,3 +1,4 @@
+using System.Linq;
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.Models.Caches;
 using LittleFlowerBot.Models.Game;
@@ -18,7 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace LittleFlowerBot
 {
@@ -110,9 +110,10 @@ namespace LittleFlowerBot
                 Predicate = _ => true,
                 ResponseWriter = async (context, report) =>
                 {
-                    var json = JsonConvert.SerializeObject(report);
+                    var allHealthReport = report.Entries.Aggregate("",
+                        (healthReport, pair) => $"{pair.Key}: {pair.Value.Status.ToString()}\n");
                     context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync(json);
+                    await context.Response.WriteAsync(allHealthReport);
                 }
             });
             
