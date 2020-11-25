@@ -111,7 +111,7 @@ namespace LittleFlowerBot
                 ResponseWriter = async (context, report) =>
                 {
                     var allHealthReport = report.Entries.Aggregate("",
-                        (healthReport, pair) => $"{pair.Key}: {pair.Value.Status.ToString()}\n");
+                        (healthReport, pair) => healthReport + $"{pair.Key}: {pair.Value.Status.ToString()}\n");
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(allHealthReport);
                 }
