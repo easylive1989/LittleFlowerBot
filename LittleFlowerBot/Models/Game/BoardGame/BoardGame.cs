@@ -13,7 +13,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
         public override void Act(string userId, string cmd)
         {
             var player = new Player(userId);
-            if (!GetBoard().IsTwoPlayers())
+            if (!GetBoard().IsPlayerFully())
             {
                 try
                 {
@@ -24,7 +24,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
                     Render("你已經加入");
                 }
 
-                if (GetBoard().IsTwoPlayers())
+                if (GetBoard().IsPlayerFully())
                 {
                     Render("遊戲開始");
                     

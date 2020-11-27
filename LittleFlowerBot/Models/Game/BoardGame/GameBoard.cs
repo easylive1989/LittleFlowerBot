@@ -51,7 +51,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
             return KiPlayerMap.ContainsValue(player);
         }
 
-        public bool IsTwoPlayers()
+        public bool IsPlayerFully()
         {
             return KiPlayerMap.All(x => x.Value != null);
         }

@@ -30,7 +30,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
         
         public override bool IsMatch(string cmd)
         {
-            if (!GetBoard().IsTwoPlayers())
+            if (!GetBoard().IsPlayerFully())
             {
                 return cmd.Equals("++");
             }

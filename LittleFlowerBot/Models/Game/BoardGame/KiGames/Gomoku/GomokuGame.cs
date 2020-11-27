@@ -19,7 +19,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
         
         public override bool IsMatch(string cmd)
         {
-            if (!GetBoard().IsTwoPlayers())
+            if (!GetBoard().IsPlayerFully())
             {
                 return cmd.Equals("++");
             }
