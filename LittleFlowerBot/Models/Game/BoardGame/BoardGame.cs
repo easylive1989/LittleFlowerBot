@@ -72,7 +72,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
 
         protected GameBoard<T> GetBoard()
         {
-            return (GameBoard<T>)GameState;
+            return (GameBoard<T>)GameBoard;
         }
     }
 }

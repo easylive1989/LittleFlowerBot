@@ -6,7 +6,7 @@ using LittleFlowerBot.Models.GameExceptions;
 namespace LittleFlowerBot.Models.Game.BoardGame
 {
     [Serializable]
-    public abstract class GameBoard<T> : IGameState where T : Enum
+    public abstract class GameBoard<T> : IGameBoard where T : Enum
     {
         protected readonly int Row;
         protected readonly int Column;

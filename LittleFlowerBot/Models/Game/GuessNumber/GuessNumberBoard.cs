@@ -3,7 +3,7 @@ using System;
 namespace LittleFlowerBot.Models.Game.GuessNumber
 {
     [Serializable]
-    public class GuessNumberState : IGameState
+    public class GuessNumberBoard : IGameBoard
     {
         public int _start;
         public int _end;

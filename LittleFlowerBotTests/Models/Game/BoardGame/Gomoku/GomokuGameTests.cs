@@ -80,7 +80,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
 
             InputCmd("userA", "++");
 
-            var isGameOver = _game.GameState.IsGameOver();
+            var isGameOver = _game.GameBoard.IsGameOver();
             
             Assert.IsFalse(isGameOver);
         }

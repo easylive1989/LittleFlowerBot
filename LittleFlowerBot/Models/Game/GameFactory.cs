@@ -14,7 +14,7 @@ namespace LittleFlowerBot.Models.Game
 
         private readonly Dictionary<Type, Type> _gameList = new Dictionary<Type, Type>()
         {
-            {typeof(GuessNumberState), typeof(GuessNumberGame)},
+            {typeof(GuessNumberBoard), typeof(GuessNumberGame)},
             {typeof(TicTacToeBoard), typeof(TicTacToeGame)},
             {typeof(GomokuBoard), typeof(GomokuGame)},
             {typeof(ChineseChessBoard), typeof(ChineseChessGame)},

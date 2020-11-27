@@ -10,7 +10,7 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
 
         public GuessNumberGame(ITextRenderer textRenderer) : base(textRenderer)
         {
-            GameState = new GuessNumberState();
+            GameBoard = new GuessNumberBoard();
         }
         
         public override void Act(string userId, string cmd)
@@ -73,9 +73,9 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
             Render("猜" + GetState()._start + " - " + GetState()._end);
         }
 
-        private GuessNumberState GetState()
+        private GuessNumberBoard GetState()
         {
-            return (GuessNumberState) GameState;
+            return (GuessNumberBoard) GameBoard;
         }
     }
 }

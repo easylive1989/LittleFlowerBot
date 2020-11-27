@@ -14,7 +14,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
             base(textRenderer)
         {
             _boardGameResultsRepository = boardGameResultsRepository;
-            GameState = new TicTacToeBoard();
+            GameBoard = new TicTacToeBoard();
         }
 
         public override bool IsMatch(string cmd)
@@ -52,7 +52,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
 
         private KiBoard GetKiBoard()
         {
-            return (KiBoard) GameState;
+            return (KiBoard) GameBoard;
         }
     }
 }

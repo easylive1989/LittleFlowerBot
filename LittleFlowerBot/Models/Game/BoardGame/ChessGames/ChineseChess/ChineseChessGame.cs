@@ -9,7 +9,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
     {
         public ChineseChessGame(ITextRenderer textRenderer) : base(textRenderer)
         {
-            GameState = new ChineseChessBoard();
+            GameBoard = new ChineseChessBoard();
         }
 
         protected override void Move(string cmd, Player player)

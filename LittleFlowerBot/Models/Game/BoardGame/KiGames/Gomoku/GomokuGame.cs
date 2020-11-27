@@ -14,7 +14,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
             base(textRenderer)
         {
             _boardGameResultsRepository = boardGameResultsRepository;
-            GameState = new GomokuBoard();
+            GameBoard = new GomokuBoard();
         }
         
         public override bool IsMatch(string cmd)
@@ -52,7 +52,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
 
         private KiBoard GetKiBoard()
         {
-            return (KiBoard) GameState;
+            return (KiBoard) GameBoard;
         }
     }
 }

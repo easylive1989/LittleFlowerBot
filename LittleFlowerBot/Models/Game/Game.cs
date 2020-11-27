@@ -17,7 +17,7 @@ namespace LittleFlowerBot.Models.Game
 
         public string SenderId { get; set; } = string.Empty;
         
-        public IGameState GameState { get; set; }
+        public IGameBoard GameBoard { get; set; }
 
         public abstract void StartGame();
 

@@ -12,21 +12,21 @@ namespace LittleFlowerBot.Models.Caches
     public class GameStateCache
     {
         private readonly IDistributedCache _redisCache;
-        private readonly Dictionary<string, IGameState> _gameStateCache = new Dictionary<string, IGameState>();
+        private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
 
         public GameStateCache(IDistributedCache redisCache)
         {
             _redisCache = redisCache;
         }
 
-        public async Task Set(string gameId, IGameState gameState)
+        public async Task Set(string gameId, IGameBoard gameBoard)
         {
-            byte[] gameStateBytes = ObjectToByteArray(gameState);
+            byte[] gameStateBytes = ObjectToByteArray(gameBoard);
             await _redisCache.SetAsync(gameId, gameStateBytes);
-            _gameStateCache[gameId] = gameState;
+            _gameStateCache[gameId] = gameBoard;
         }
 
-        public async Task<IGameState> Get(string gameId)
+        public async Task<IGameBoard> Get(string gameId)
         {
             if (_gameStateCache.ContainsKey(gameId))
             {
@@ -36,7 +36,7 @@ namespace LittleFlowerBot.Models.Caches
             var gameStateBytes = await _redisCache.GetAsync(gameId);
             if (gameStateBytes != null)
             {
-                return (IGameState)ByteArrayToObject(gameStateBytes);
+                return (IGameBoard)ByteArrayToObject(gameStateBytes);
             }
 
             return null;

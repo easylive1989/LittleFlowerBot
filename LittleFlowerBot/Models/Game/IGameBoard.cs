@@ -1,6 +1,6 @@
 namespace LittleFlowerBot.Models.Game
 {
-    public interface IGameState
+    public interface IGameBoard
     {
         bool IsGameOver();
     }

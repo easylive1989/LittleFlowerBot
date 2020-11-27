@@ -16,7 +16,7 @@ namespace LittleFlowerBot.Services.EventHandler
     {
         private readonly Dictionary<string, Type> _cmdGameTypeDict = new Dictionary<string, Type>()
         {
-            {"玩猜數字", typeof(GuessNumberState)},
+            {"玩猜數字", typeof(GuessNumberBoard)},
             {"玩井字遊戲", typeof(TicTacToeBoard)},
             {"玩五子棋", typeof(GomokuBoard)},
             {"玩象棋", typeof(ChineseChessBoard)},
@@ -45,18 +45,18 @@ namespace LittleFlowerBot.Services.EventHandler
             if (gameState != null)
             {
                 var game = _gameFactory.CreateGame(gameState.GetType());
-                game.GameState = gameState;
+                game.GameBoard = gameState;
                 game.SenderId = gameId;
                 if (game.IsMatch(cmd))
                 {
                     game.Act(userId, cmd);
-                    if (game.GameState.IsGameOver())
+                    if (game.GameBoard.IsGameOver())
                     {
                         await _gameStateCache.Remove(gameId);
                     }
                     else
                     {
-                        await _gameStateCache.Set(gameId, game.GameState);
+                        await _gameStateCache.Set(gameId, game.GameBoard);
                     }
                 }
                 else if(cmd == "我認輸了" )
@@ -79,7 +79,7 @@ namespace LittleFlowerBot.Services.EventHandler
                     var gameType = _cmdGameTypeDict[cmd];
                     var game = _gameFactory.CreateGame(gameType);
                     game.SenderId = gameId;
-                    await _gameStateCache.Set(gameId, game.GameState);
+                    await _gameStateCache.Set(gameId, game.GameBoard);
                     game.StartGame();
                 }
             }
