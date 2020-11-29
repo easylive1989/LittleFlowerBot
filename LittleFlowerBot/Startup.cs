@@ -85,6 +85,7 @@ namespace LittleFlowerBot
             {
                 services.AddScoped<ITextRenderer, LineNotify>();
                 services.AddScoped<ILineNotify, LineNotify>();
+                services.AddScoped<ILineNotifySubscription, LineNotifySubscription>();
                 services.AddScoped<IMessage, LineMessage>();
             }
         }

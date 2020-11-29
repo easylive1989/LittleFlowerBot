@@ -20,17 +20,17 @@ namespace LittleFlowerBotTests.Services.EventHandler
         private RegistrationCache _registrationCache;
         private string _guid = "xxxx";
         private string _token = "token";
-        private ILineNotify _lineNotify;
+        private ILineNotifySubscription _lineNotifySubscription;
         private string _link = "link";
 
         [SetUp]
         public void Setup()
         {
             _message = Substitute.For<IMessage>();
-            _lineNotify = Substitute.For<ILineNotify>();
+            _lineNotifySubscription = Substitute.For<ILineNotifySubscription>();
             _registrationCache = new RegistrationCache();
-            _registrationHandler = new StubRegistrationHandler(_message, _registrationCache, _lineNotify);
-            _lineNotify.GenerateLink(Arg.Any<string>()).Returns(_link);
+            _registrationHandler = new StubRegistrationHandler(_message, _registrationCache, _lineNotifySubscription);
+            _lineNotifySubscription.GenerateLink(Arg.Any<string>()).Returns(_link);
         }
         
         [Test]
@@ -61,7 +61,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
 
             _registrationHandler.Subscribe(_token, _guid);
             
-            _lineNotify.Received(1).SaveToken(_userId, _token);
+            _lineNotifySubscription.Received(1).SaveToken(_userId, _token);
         }
         
         [Test]
@@ -73,12 +73,12 @@ namespace LittleFlowerBotTests.Services.EventHandler
 
             _registrationHandler.Subscribe(_token, _guid);
             
-            _lineNotify.DidNotReceive().SaveToken(_userId, _token);
+            _lineNotifySubscription.DidNotReceive().SaveToken(_userId, _token);
         }
         
         private void GivenIsRegistered()
         {
-            _lineNotify.IsRegistered(Arg.Any<string>()).Returns(true);
+            _lineNotifySubscription.IsRegistered(Arg.Any<string>()).Returns(true);
         }
         
         private void GiveCache(string userId)
@@ -119,7 +119,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
         public string Guid { get; set; }
         
         public StubRegistrationHandler(IMessage message,
-            RegistrationCache registrationCache, ILineNotify lineNotify) : base(message, registrationCache, lineNotify)
+            RegistrationCache registrationCache, ILineNotifySubscription lineNotifySubscription) : base(message, registrationCache, lineNotifySubscription)
         {
         }
 

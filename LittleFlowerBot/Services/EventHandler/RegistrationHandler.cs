@@ -12,21 +12,21 @@ namespace LittleFlowerBot.Services.EventHandler
     {
         private readonly IMessage _message;
         private readonly RegistrationCache _registrationCache;
-        private readonly ILineNotify _lineNotify;
+        private readonly ILineNotifySubscription _lineNotifySubscription;
 
         public RegistrationHandler(IMessage message,
-            RegistrationCache registrationCache, ILineNotify lineNotify)
+            RegistrationCache registrationCache, ILineNotifySubscription lineNotifySubscription)
         {
             _message = message;
             _registrationCache = registrationCache;
-            _lineNotify = lineNotify;
+            _lineNotifySubscription = lineNotifySubscription;
         }
 
         public Task Act(Event @event)
         {
             if (@event.Text().Equals("我要註冊"))
             {
-                if (_lineNotify.IsRegistered(@event.SenderId()))
+                if (_lineNotifySubscription.IsRegistered(@event.SenderId()))
                 {
                     _message.Reply(@event.replyToken, "你已經註冊了");
                 }
@@ -34,7 +34,7 @@ namespace LittleFlowerBot.Services.EventHandler
                 {
                     var guid = GenerateGuid();
                     _registrationCache.Add(guid, @event.SenderId());
-                    _message.Reply(@event.replyToken, _lineNotify.GenerateLink(guid));
+                    _message.Reply(@event.replyToken, _lineNotifySubscription.GenerateLink(guid));
                 }
             }
             
@@ -51,9 +51,9 @@ namespace LittleFlowerBot.Services.EventHandler
             var senderId = _registrationCache.GetSenderId(guid);
             if (senderId != null)
             {
-                if (!_lineNotify.IsRegistered(senderId))
+                if (!_lineNotifySubscription.IsRegistered(senderId))
                 {
-                    await _lineNotify.SaveToken(senderId, code);
+                    await _lineNotifySubscription.SaveToken(senderId, code);
                     _registrationCache.Remove(guid);;
                 }
             }
