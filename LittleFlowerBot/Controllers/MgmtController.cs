@@ -9,16 +9,16 @@ namespace LittleFlowerBot.Controllers
 {
     public class MgmtController : Controller
     {
-        private readonly GameStateCache _gameStateCache;
+        private readonly GameBoardCache _gameBoardCache;
 
-        public MgmtController(GameStateCache gameStateCache)
+        public MgmtController(GameBoardCache gameBoardCache)
         {
-            _gameStateCache = gameStateCache;
+            _gameBoardCache = gameBoardCache;
         }
         
         public async Task<ActionResult> ClearGame(string gameId)
         {
-            await _gameStateCache.Remove(gameId);
+            await _gameBoardCache.Remove(gameId);
             return Content("OK");
         }
         
@@ -31,7 +31,7 @@ namespace LittleFlowerBot.Controllers
         {
             return View(new CacheMonitorModel()
             {
-                GameIdList = _gameStateCache.GetGameIdList()
+                GameIdList = _gameBoardCache.GetGameIdList()
             });
         }
         

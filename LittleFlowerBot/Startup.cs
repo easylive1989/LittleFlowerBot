@@ -52,7 +52,7 @@ namespace LittleFlowerBot
             services.AddControllers();
 
             services.AddSingleton<RegistrationCache>();
-            services.AddSingleton<GameStateCache>();
+            services.AddSingleton<GameBoardCache>();
             services.AddScoped<GameFactory>();
 
             services.AddScoped<IBoardGameResultsRepository, BoardGameResultsRepository>();

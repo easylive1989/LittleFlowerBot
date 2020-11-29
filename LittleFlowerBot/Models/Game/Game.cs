@@ -16,14 +16,14 @@ namespace LittleFlowerBot.Models.Game
         }
 
         public string SenderId { get; set; } = string.Empty;
-        
+
         public IGameBoard GameBoard { get; set; }
 
-        public abstract void StartGame();
+        public abstract void Act(string userId, string cmd);
 
         public abstract bool IsMatch(string cmd);
 
-        public abstract void Act(string userId, string cmd);
+        public abstract void StartGame();
 
         protected void Render(string text)
         {

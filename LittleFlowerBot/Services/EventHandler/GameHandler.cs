@@ -23,12 +23,12 @@ namespace LittleFlowerBot.Services.EventHandler
         };
         
         private readonly GameFactory _gameFactory;
-        private readonly GameStateCache _gameStateCache;
+        private readonly GameBoardCache _gameBoardCache;
 
-        public GameHandler(GameFactory gameFactory, GameStateCache gameStateCache)
+        public GameHandler(GameFactory gameFactory, GameBoardCache gameBoardCache)
         {
             _gameFactory = gameFactory;
-            _gameStateCache = gameStateCache;
+            _gameBoardCache = gameBoardCache;
         }
 
         public async Task Act(Event @event)
@@ -41,7 +41,7 @@ namespace LittleFlowerBot.Services.EventHandler
         
         public async Task Act(string gameId, string userId, string cmd)
         {
-            var gameState = await _gameStateCache.Get(gameId);
+            var gameState = await _gameBoardCache.Get(gameId);
             if (gameState != null)
             {
                 var game = _gameFactory.CreateGame(gameState.GetType());
@@ -52,11 +52,11 @@ namespace LittleFlowerBot.Services.EventHandler
                     game.Act(userId, cmd);
                     if (game.GameBoard.IsGameOver())
                     {
-                        await _gameStateCache.Remove(gameId);
+                        await _gameBoardCache.Remove(gameId);
                     }
                     else
                     {
-                        await _gameStateCache.Set(gameId, game.GameBoard);
+                        await _gameBoardCache.Set(gameId, game.GameBoard);
                     }
                 }
                 else if(cmd == "我認輸了" )
@@ -69,7 +69,7 @@ namespace LittleFlowerBot.Services.EventHandler
                         ticTacToeGame.GameOver();
                     }
 
-                    await _gameStateCache.Remove(gameId);
+                    await _gameBoardCache.Remove(gameId);
                 }
             }
             else
@@ -79,7 +79,7 @@ namespace LittleFlowerBot.Services.EventHandler
                     var gameType = _cmdGameTypeDict[cmd];
                     var game = _gameFactory.CreateGame(gameType);
                     game.SenderId = gameId;
-                    await _gameStateCache.Set(gameId, game.GameBoard);
+                    await _gameBoardCache.Set(gameId, game.GameBoard);
                     game.StartGame();
                 }
             }

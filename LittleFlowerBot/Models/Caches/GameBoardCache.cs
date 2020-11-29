@@ -9,12 +9,12 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace LittleFlowerBot.Models.Caches
 {
-    public class GameStateCache
+    public class GameBoardCache
     {
         private readonly IDistributedCache _redisCache;
         private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
 
-        public GameStateCache(IDistributedCache redisCache)
+        public GameBoardCache(IDistributedCache redisCache)
         {
             _redisCache = redisCache;
         }
