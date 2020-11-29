@@ -9,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace LittleFlowerBot.Models.Caches
 {
-    public class GameBoardCache
+    public class GameBoardCache : IGameBoardCache
     {
         private readonly IDistributedCache _redisCache;
         private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();

@@ -9,9 +9,9 @@ namespace LittleFlowerBot.Controllers
 {
     public class MgmtController : Controller
     {
-        private readonly GameBoardCache _gameBoardCache;
+        private readonly IGameBoardCache _gameBoardCache;
 
-        public MgmtController(GameBoardCache gameBoardCache)
+        public MgmtController(IGameBoardCache gameBoardCache)
         {
             _gameBoardCache = gameBoardCache;
         }

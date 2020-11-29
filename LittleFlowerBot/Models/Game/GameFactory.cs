@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
-using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Models.Game
 {
-    public class GameFactory
+    public class GameFactory : IGameFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

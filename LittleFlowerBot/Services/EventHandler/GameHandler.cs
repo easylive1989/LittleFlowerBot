@@ -22,10 +22,10 @@ namespace LittleFlowerBot.Services.EventHandler
             {"玩象棋", typeof(ChineseChessBoard)},
         };
         
-        private readonly GameFactory _gameFactory;
-        private readonly GameBoardCache _gameBoardCache;
+        private readonly IGameFactory _gameFactory;
+        private readonly IGameBoardCache _gameBoardCache;
 
-        public GameHandler(GameFactory gameFactory, GameBoardCache gameBoardCache)
+        public GameHandler(IGameFactory gameFactory, IGameBoardCache gameBoardCache)
         {
             _gameFactory = gameFactory;
             _gameBoardCache = gameBoardCache;
@@ -61,14 +61,7 @@ namespace LittleFlowerBot.Services.EventHandler
                 }
                 else if(cmd == "我認輸了" )
                 {
-                    if (game is GomokuGame gomokuGamegame)
-                    {
-                        gomokuGamegame.GameOver();
-                    } else if (game is TicTacToeGame ticTacToeGame)
-                    {
-                        ticTacToeGame.GameOver();
-                    }
-
+                    game.GameOver();
                     await _gameBoardCache.Remove(gameId);
                 }
             }
