@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Models.Game.GuessNumber
 {
@@ -8,7 +7,7 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
     {
         public Random Random = new Random();
 
-        public GuessNumberGame(ITextRenderer textRenderer) : base(textRenderer)
+        public GuessNumberGame() 
         {
             GameBoard = new GuessNumberBoard();
         }

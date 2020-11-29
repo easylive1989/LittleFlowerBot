@@ -17,7 +17,7 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
         {
             var lineBotAction = Substitute.For<ITextRenderer>();
             
-            var isMatch = new GuessNumberGame(lineBotAction).IsMatch("99");
+            var isMatch = new GuessNumberGame().IsMatch("99");
 
             Assert.IsTrue(isMatch);
         }
@@ -27,7 +27,7 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
         {
             var lineBotAction = Substitute.For<ITextRenderer>();
             
-            var isMatch = new GuessNumberGame(lineBotAction).IsMatch("-117");
+            var isMatch = new GuessNumberGame().IsMatch("-117");
 
             Assert.IsFalse(isMatch);
         }
@@ -83,7 +83,7 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
 
         private void MessageShouldBe(string message, int count)
         {
-            _renderer.Received(count).Render("", message);
+            _renderer.Received(count).Render(message);
         }
 
         private void GuessNumber(string number)
@@ -96,10 +96,11 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
             _renderer = Substitute.For<ITextRenderer>();
             var random = Substitute.For<Random>();
             random.Next(0).ReturnsForAnyArgs(target);
-            _guessNumberGame = new GuessNumberGame(_renderer)
+            _guessNumberGame = new GuessNumberGame()
             {
                 Random = random
             };
+            _guessNumberGame.TextRenderer = _renderer;
             _guessNumberGame.StartGame();
         }
 

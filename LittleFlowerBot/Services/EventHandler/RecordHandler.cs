@@ -46,7 +46,7 @@ namespace LittleFlowerBot.Services.EventHandler
 
             if (!gameResults.Any())
             {
-                _textRenderer.Render(@event.SenderId(), "你沒有任何戰績");
+                _textRenderer.Render("你沒有任何戰績");
                 return;
             }
             
@@ -55,7 +55,7 @@ namespace LittleFlowerBot.Services.EventHandler
             {
                 stringBuilder.Append($"你在{gameResult.GameName}贏了{gameResult.WinCount}次，輸了{gameResult.LostCount}次\n");
             }
-            _textRenderer.Render(@event.SenderId(), stringBuilder.ToString());
+            _textRenderer.Render(stringBuilder.ToString());
         }
     }
 }

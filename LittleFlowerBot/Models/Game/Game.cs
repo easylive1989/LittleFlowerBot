@@ -4,14 +4,7 @@ namespace LittleFlowerBot.Models.Game
 {
     public abstract class Game
     {
-        private readonly ITextRenderer _textRenderer;
-
-        protected Game(ITextRenderer textRenderer)
-        {
-            _textRenderer = textRenderer;
-        }
-
-        public string SenderId { get; set; } = string.Empty;
+        public ITextRenderer TextRenderer { get; set; }
 
         public IGameBoard GameBoard { get; set; }
 
@@ -23,7 +16,7 @@ namespace LittleFlowerBot.Models.Game
 
         protected void Render(string text)
         {
-            _textRenderer.Render(SenderId, text);
+            TextRenderer.Render(text);
         }
 
         public virtual void GameOver()

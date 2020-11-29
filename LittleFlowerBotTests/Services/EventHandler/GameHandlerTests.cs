@@ -21,7 +21,8 @@ namespace LittleFlowerBotTests.Services.EventHandler
         {
             _gameFactory = Substitute.For<IGameFactory>();
             _gameBoardCache = Substitute.For<IGameBoardCache>();
-            _gameHandler = new GameHandler(_gameFactory, _gameBoardCache);
+            var rendererFactory = Substitute.For<IRendererFactory>();
+            _gameHandler = new GameHandler(_gameFactory, _gameBoardCache, rendererFactory);
         }
 
         [Test]
@@ -45,7 +46,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
 
         private void GivenMockGame()
         {
-            _mockGame = Substitute.For<Game>(Substitute.For<ITextRenderer>());
+            _mockGame = Substitute.For<Game>();
             _gameFactory.CreateGame(Arg.Any<Type>()).Returns(_mockGame);
         }
 

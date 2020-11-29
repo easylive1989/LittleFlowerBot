@@ -4,9 +4,9 @@ using LittleFlowerBot.Models.Message;
 
 namespace LittleFlowerBot.Models.Renderer
 {
-    public class ConsoleRenderer : ITextRenderer, IMessage, ILineNotify
+    public class ConsoleRenderer : ITextRenderer, IMessage, ILineNotifySubscription
     {
-        public void Render(string to, string text)
+        public void Render(string text)
         {
             Console.WriteLine(text);
         }

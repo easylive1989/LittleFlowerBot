@@ -1,13 +1,12 @@
 using System.Text.RegularExpressions;
 using LittleFlowerBot.Models.GameExceptions;
-using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
 
 namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
 {
     public class ChineseChessGame : BoardGame<ChineseChess>
     {
-        public ChineseChessGame(ITextRenderer textRenderer) : base(textRenderer)
+        public ChineseChessGame()
         {
             GameBoard = new ChineseChessBoard();
         }

@@ -19,7 +19,8 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         public void Setup()
         {
             _textRenderer = Substitute.For<ITextRenderer>();
-            _chineseChessGame = new ChineseChessGame(_textRenderer);
+            _chineseChessGame = new ChineseChessGame();
+            _chineseChessGame.TextRenderer = _textRenderer;
         }
 
         [Test]
@@ -158,7 +159,7 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         
         private void MessageShouldBe(string message)
         {
-            _textRenderer.Received(1).Render(Arg.Any<string>(), message);
+            _textRenderer.Received(1).Render(message);
         }
         
         private void GivenTwoPlayerJoin()

@@ -9,6 +9,7 @@ using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
 using LittleFlowerBot.Models.Game.GuessNumber;
+using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Services.EventHandler
 {
@@ -24,11 +25,13 @@ namespace LittleFlowerBot.Services.EventHandler
         
         private readonly IGameFactory _gameFactory;
         private readonly IGameBoardCache _gameBoardCache;
+        private readonly IRendererFactory _rendererFactory;
 
-        public GameHandler(IGameFactory gameFactory, IGameBoardCache gameBoardCache)
+        public GameHandler(IGameFactory gameFactory, IGameBoardCache gameBoardCache, IRendererFactory rendererFactory)
         {
             _gameFactory = gameFactory;
             _gameBoardCache = gameBoardCache;
+            _rendererFactory = rendererFactory;
         }
 
         public async Task Act(Event @event)
@@ -46,7 +49,7 @@ namespace LittleFlowerBot.Services.EventHandler
             {
                 var game = _gameFactory.CreateGame(gameState.GetType());
                 game.GameBoard = gameState;
-                game.SenderId = gameId;
+                game.TextRenderer = _rendererFactory.Get(gameId);
                 if (game.IsMatch(cmd))
                 {
                     game.Act(userId, cmd);
@@ -71,7 +74,7 @@ namespace LittleFlowerBot.Services.EventHandler
                 {
                     var gameType = _cmdGameTypeDict[cmd];
                     var game = _gameFactory.CreateGame(gameType);
-                    game.SenderId = gameId;
+                    game.TextRenderer = _rendererFactory.Get(gameId);
                     await _gameBoardCache.Set(gameId, game.GameBoard);
                     game.StartGame();
                 }

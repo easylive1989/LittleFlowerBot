@@ -1,14 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using LittleFlowerBot.Repositories;
-using Microsoft.Extensions.Configuration;
 
 namespace LittleFlowerBot.Models.Renderer
 {
-    public class LineNotify : ITextRenderer, ILineNotify
+    public class LineNotify : ITextRenderer
     {
+        public string SenderId { get; set; }
+        
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISubscriptionRepository _subscriptionRepository;
 
@@ -20,9 +20,9 @@ namespace LittleFlowerBot.Models.Renderer
             _subscriptionRepository = subscriptionRepository;
         }
 
-        public void Render(string to, string text)
+        public void Render(string text)
         {
-            var receiver = _subscriptionRepository.Get(to).Receiver;
+            var receiver = _subscriptionRepository.Get(SenderId).Receiver;
             var requestMessage =
                 new HttpRequestMessage(HttpMethod.Post, _notifyApi)
                 {

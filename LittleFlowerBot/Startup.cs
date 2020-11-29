@@ -54,6 +54,7 @@ namespace LittleFlowerBot
             services.AddSingleton<RegistrationCache>();
             services.AddSingleton<IGameBoardCache, GameBoardCache>();
             services.AddScoped<IGameFactory, GameFactory>();
+            services.AddScoped<IRendererFactory, RendererFactory>();
 
             services.AddScoped<IBoardGameResultsRepository, BoardGameResultsRepository>();
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
@@ -73,18 +74,19 @@ namespace LittleFlowerBot
             services.AddHealthChecks()
                 .AddNpgSql(Configuration["ConnectionStrings:DefaultConnection"], name: "PostgreSQL")
                 .AddRedis(Configuration["Redis:Host"], name: "Redis");
-            
-            
+
+
+            services.AddScoped<ConsoleRenderer>();
+            services.AddScoped<LineNotify>();
             if (WebHostEnvironment.IsDevelopment())
             {
                 services.AddScoped<ITextRenderer, ConsoleRenderer>();
-                services.AddScoped<ILineNotify, ConsoleRenderer>();
+                services.AddScoped<ILineNotifySubscription, ConsoleRenderer>();
                 services.AddScoped<IMessage, ConsoleRenderer>();
             }
             else
             {
                 services.AddScoped<ITextRenderer, LineNotify>();
-                services.AddScoped<ILineNotify, LineNotify>();
                 services.AddScoped<ILineNotifySubscription, LineNotifySubscription>();
                 services.AddScoped<IMessage, LineMessage>();
             }

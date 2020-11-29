@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using LittleFlowerBot.Models.GameResult;
-using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
 
 namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
@@ -10,8 +9,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
     {
         private readonly IBoardGameResultsRepository _boardGameResultsRepository;
 
-        public TicTacToeGame(ITextRenderer textRenderer, IBoardGameResultsRepository boardGameResultsRepository) : 
-            base(textRenderer)
+        public TicTacToeGame(IBoardGameResultsRepository boardGameResultsRepository)
         {
             _boardGameResultsRepository = boardGameResultsRepository;
             GameBoard = new TicTacToeBoard();

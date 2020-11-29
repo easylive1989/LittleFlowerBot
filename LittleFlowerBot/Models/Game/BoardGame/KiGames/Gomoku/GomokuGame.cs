@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using LittleFlowerBot.Models.GameResult;
-using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
 
 namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
@@ -10,8 +9,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
     {
         private readonly IBoardGameResultsRepository _boardGameResultsRepository;
 
-        public GomokuGame(ITextRenderer textRenderer, IBoardGameResultsRepository boardGameResultsRepository) : 
-            base(textRenderer)
+        public GomokuGame(IBoardGameResultsRepository boardGameResultsRepository)
         {
             _boardGameResultsRepository = boardGameResultsRepository;
             GameBoard = new GomokuBoard();

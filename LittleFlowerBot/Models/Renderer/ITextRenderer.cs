@@ -2,6 +2,6 @@
 {
     public interface ITextRenderer
     {
-        void Render(string to, string text);
+        void Render(string text);
     }
 }

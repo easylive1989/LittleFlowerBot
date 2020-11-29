@@ -88,14 +88,15 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
 
         private void MessageShouldBe(string message)
         {
-            _renderer.Received(1).Render("", message);
+            _renderer.Received(1).Render(message);
         }
 
         private void StartGame()
         {
             _renderer = Substitute.For<ITextRenderer>();
             var dualGameResultsRepository = Substitute.For<IBoardGameResultsRepository>();
-            _game = new GomokuGame(_renderer, dualGameResultsRepository);
+            _game = new GomokuGame(dualGameResultsRepository);
+            _game.TextRenderer = _renderer;
 
             _game.StartGame();
         }

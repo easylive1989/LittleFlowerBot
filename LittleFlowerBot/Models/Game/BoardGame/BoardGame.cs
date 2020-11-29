@@ -1,15 +1,10 @@
 ﻿using System;
 using LittleFlowerBot.Models.GameExceptions;
-using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Models.Game.BoardGame
 {
     public abstract class BoardGame<T> : Game where T : Enum
     {
-        protected BoardGame(ITextRenderer textRenderer) : base(textRenderer)
-        {
-        }
-
         public override void Act(string userId, string cmd)
         {
             var player = new Player(userId);
