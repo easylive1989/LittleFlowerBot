@@ -29,5 +29,10 @@ namespace LittleFlowerBot.Models.Game
         {
             _textRenderer.Render(SenderId, text);
         }
+
+        public virtual void GameOver()
+        {
+            Render("遊戲結束!");
+        }
     }
 }

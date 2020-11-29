@@ -44,11 +44,6 @@ namespace LittleFlowerBot.Models.Game.BoardGame
             }
         }
 
-        public virtual void GameOver()
-        {
-            Render("遊戲結束!");
-        }
-
         protected virtual void Move(string cmd, Player player)
         {
             try
