@@ -44,11 +44,11 @@ namespace LittleFlowerBot.Services.EventHandler
         
         public async Task Act(string gameId, string userId, string cmd)
         {
-            var gameState = await _gameBoardCache.Get(gameId);
-            if (gameState != null)
+            var gameBoard = await _gameBoardCache.Get(gameId);
+            if (gameBoard != null)
             {
-                var game = _gameFactory.CreateGame(gameState.GetType());
-                game.GameBoard = gameState;
+                var game = _gameFactory.CreateGame(gameBoard.GetType());
+                game.GameBoard = gameBoard;
                 game.TextRenderer = _rendererFactory.Get(gameId);
                 if (game.IsMatch(cmd))
                 {
