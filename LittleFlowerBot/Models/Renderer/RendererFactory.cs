@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -6,25 +7,29 @@ namespace LittleFlowerBot.Models.Renderer
     public class RendererFactory : IRendererFactory
     {
         private readonly IWebHostEnvironment _environment;
-        private readonly LineNotifySender _lineNotifySender;
-        private readonly ConsoleRenderer _consoleRenderer;
+        private readonly IServiceProvider _serviceProvider;
 
-        public RendererFactory(IWebHostEnvironment environment, LineNotifySender lineNotifySender, ConsoleRenderer consoleRenderer)
+        public RendererFactory(IWebHostEnvironment environment, IServiceProvider serviceProvider)
         {
             _environment = environment;
-            _lineNotifySender = lineNotifySender;
-            _consoleRenderer = consoleRenderer;
+            _serviceProvider = serviceProvider;
         }
         
         public ITextRenderer Get(string senderId)
         {
             if (_environment.IsDevelopment())
             {
-                return _consoleRenderer;
+                return GetRenderer<ConsoleRenderer>();
             }
-           
-            _lineNotifySender.SenderId = senderId;
-            return _lineNotifySender;
+
+            var lineNotifySender = GetRenderer<LineNotifySender>();
+            lineNotifySender.SenderId = senderId;
+            return lineNotifySender;
+        }
+
+        private T GetRenderer<T>() where T : ITextRenderer
+        {
+            return (T)_serviceProvider.GetService(typeof(T));
         }
     }
 }
