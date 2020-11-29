@@ -6,13 +6,13 @@ namespace LittleFlowerBot.Models.Renderer
     public class RendererFactory : IRendererFactory
     {
         private readonly IWebHostEnvironment _environment;
-        private readonly LineNotify _lineNotify;
+        private readonly LineNotifySender _lineNotifySender;
         private readonly ConsoleRenderer _consoleRenderer;
 
-        public RendererFactory(IWebHostEnvironment environment, LineNotify lineNotify, ConsoleRenderer consoleRenderer)
+        public RendererFactory(IWebHostEnvironment environment, LineNotifySender lineNotifySender, ConsoleRenderer consoleRenderer)
         {
             _environment = environment;
-            _lineNotify = lineNotify;
+            _lineNotifySender = lineNotifySender;
             _consoleRenderer = consoleRenderer;
         }
         
@@ -23,8 +23,8 @@ namespace LittleFlowerBot.Models.Renderer
                 return _consoleRenderer;
             }
            
-            _lineNotify.SenderId = senderId;
-            return _lineNotify;
+            _lineNotifySender.SenderId = senderId;
+            return _lineNotifySender;
         }
     }
 }

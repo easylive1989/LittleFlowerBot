@@ -77,7 +77,7 @@ namespace LittleFlowerBot
 
 
             services.AddScoped<ConsoleRenderer>();
-            services.AddScoped<LineNotify>();
+            services.AddScoped<LineNotifySender>();
             if (WebHostEnvironment.IsDevelopment())
             {
                 services.AddScoped<ITextRenderer, ConsoleRenderer>();
@@ -86,7 +86,7 @@ namespace LittleFlowerBot
             }
             else
             {
-                services.AddScoped<ITextRenderer, LineNotify>();
+                services.AddScoped<ITextRenderer, LineNotifySender>();
                 services.AddScoped<ILineNotifySubscription, LineNotifySubscription>();
                 services.AddScoped<IMessage, LineMessage>();
             }

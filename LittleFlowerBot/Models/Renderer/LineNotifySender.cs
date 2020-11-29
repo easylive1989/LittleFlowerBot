@@ -5,7 +5,7 @@ using LittleFlowerBot.Repositories;
 
 namespace LittleFlowerBot.Models.Renderer
 {
-    public class LineNotify : ITextRenderer
+    public class LineNotifySender : ITextRenderer
     {
         public string SenderId { get; set; }
         
@@ -14,7 +14,7 @@ namespace LittleFlowerBot.Models.Renderer
 
         private readonly string _notifyApi = "https://notify-api.line.me/api/notify";
 
-        public LineNotify(IHttpClientFactory httpClientFactory, ISubscriptionRepository subscriptionRepository)
+        public LineNotifySender(IHttpClientFactory httpClientFactory, ISubscriptionRepository subscriptionRepository)
         {
             _httpClientFactory = httpClientFactory;
             _subscriptionRepository = subscriptionRepository;
