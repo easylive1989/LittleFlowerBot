@@ -12,7 +12,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
         protected readonly int Column;
         protected T[][] GameBoardArray;
 
-        protected readonly Dictionary<T, Player> KiPlayerMap = new Dictionary<T, Player>();
+        protected readonly Dictionary<T, Player> PlayerMap = new Dictionary<T, Player>();
         protected readonly List<Player> PlayerMoveOrder = new List<Player>();
 
         protected GameBoard(int row, int column)
@@ -29,7 +29,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
             {
                 if (!value.Equals(default(T)))
                 {
-                    KiPlayerMap.Add((T) value, null);
+                    PlayerMap.Add((T) value, null);
                 }
             }
         }
@@ -48,12 +48,12 @@ namespace LittleFlowerBot.Models.Game.BoardGame
 
         private bool IsPlayerJoin(Player player)
         {
-            return KiPlayerMap.ContainsValue(player);
+            return PlayerMap.ContainsValue(player);
         }
 
         public bool IsPlayerFully()
         {
-            return KiPlayerMap.All(x => x.Value != null);
+            return PlayerMap.All(x => x.Value != null);
         }
 
         protected T this[int i, int j]

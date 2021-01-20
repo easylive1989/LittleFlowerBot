@@ -27,11 +27,11 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames
 
         protected override void JoinImpl(Player player)
         {
-            foreach (var key in KiPlayerMap.Keys)
+            foreach (var key in PlayerMap.Keys)
             {
-                if (KiPlayerMap[key] == null)
+                if (PlayerMap[key] == null)
                 {
-                    KiPlayerMap[key] = player;
+                    PlayerMap[key] = player;
                     break;
                 }
             }
@@ -84,8 +84,8 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames
         
         private Ki GetCurrentKi()
         {
-            var idx = GetTurn() % KiPlayerMap.Count;
-            var keyValuePair = KiPlayerMap.ElementAt(idx);
+            var idx = GetTurn() % PlayerMap.Count;
+            var keyValuePair = PlayerMap.ElementAt(idx);
             return keyValuePair.Key;
         }
         

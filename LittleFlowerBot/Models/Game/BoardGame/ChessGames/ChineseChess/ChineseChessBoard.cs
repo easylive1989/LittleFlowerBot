@@ -64,11 +64,11 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
 
         protected override void JoinImpl(Player player)
         {
-            var isFirstPlayJoin = KiPlayerMap.Values.All(x => x == null);
+            var isFirstPlayJoin = PlayerMap.Values.All(x => x == null);
             var targetChessSet = isFirstPlayJoin ? ChineseChessExtensions.BlackChessGroup : ChineseChessExtensions.RedChessGroup;
             foreach (var chess in targetChessSet)
             {
-                KiPlayerMap[chess] = player;
+                PlayerMap[chess] = player;
             }
         }
 
@@ -128,9 +128,9 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
         private bool IsYourChess(Player player, int x, int y)
         {
             var chess = this[x, y];
-            if (KiPlayerMap.ContainsKey(chess))
+            if (PlayerMap.ContainsKey(chess))
             {
-                return KiPlayerMap[chess].Equals(player);
+                return PlayerMap[chess].Equals(player);
             }
 
             return false;
