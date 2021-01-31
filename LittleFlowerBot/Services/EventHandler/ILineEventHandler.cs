@@ -3,7 +3,7 @@ using isRock.LineBot;
 
 namespace LittleFlowerBot.Services.EventHandler
 {
-    public interface IEventHandler
+    public interface ILineEventHandler
     {
         Task Act(Event @event);
     }

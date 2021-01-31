@@ -13,7 +13,7 @@ using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Services.EventHandler
 {
-    public class GameHandler : IEventHandler
+    public class GameHandler : ILineEventHandler
     {
         private readonly Dictionary<string, Type> _cmdGameTypeDict = new Dictionary<string, Type>()
         {

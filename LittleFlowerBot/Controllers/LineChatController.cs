@@ -14,9 +14,9 @@ namespace LittleFlowerBot.Controllers
     [Route("api/[controller]")]
     public class LineChatController : ControllerBase
     {
-        private readonly IEnumerable<IEventHandler> _eventHandlers;
+        private readonly IEnumerable<ILineEventHandler> _eventHandlers;
         
-        public LineChatController(IEnumerable<IEventHandler> eventHandlers)
+        public LineChatController(IEnumerable<ILineEventHandler> eventHandlers)
         {
             _eventHandlers = eventHandlers;
         }

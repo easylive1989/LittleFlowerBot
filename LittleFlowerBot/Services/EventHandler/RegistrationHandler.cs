@@ -8,7 +8,7 @@ using LittleFlowerBot.Models.Renderer;
 
 namespace LittleFlowerBot.Services.EventHandler
 {
-    public class RegistrationHandler : IEventHandler
+    public class RegistrationHandler : ILineEventHandler
     {
         private readonly IMessage _message;
         private readonly RegistrationCache _registrationCache;

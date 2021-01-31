@@ -11,7 +11,7 @@ using LittleFlowerBot.Repositories;
 
 namespace LittleFlowerBot.Services.EventHandler
 {
-    public class RecordHandler : IEventHandler
+    public class RecordHandler : ILineEventHandler
     {
         private readonly ITextRenderer _textRenderer;
         private readonly IBoardGameResultsRepository _boardGameResultsRepository;

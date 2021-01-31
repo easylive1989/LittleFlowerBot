@@ -64,10 +64,10 @@ namespace LittleFlowerBot
             services.AddScoped<ChineseChessGame>();
             services.AddScoped<GuessNumberGame>();
 
-            services.AddScoped<IEventHandler, GameHandler>();
-            services.AddScoped<IEventHandler, RecordHandler>();
+            services.AddScoped<ILineEventHandler, GameHandler>();
+            services.AddScoped<ILineEventHandler, RecordHandler>();
             services.AddScoped<GameHandler, GameHandler>();
-            services.AddScoped<IEventHandler, RegistrationHandler>();
+            services.AddScoped<ILineEventHandler, RegistrationHandler>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
