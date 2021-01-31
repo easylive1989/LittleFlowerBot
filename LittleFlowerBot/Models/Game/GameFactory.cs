@@ -31,12 +31,12 @@ namespace LittleFlowerBot.Models.Game
 
         public Game CreateGame(IGameBoard gameBoard)
         {
-            var game = _serviceProvider.GetService(gameBoard.GetType()) as Game;
-            if (game != null)
-            {
-                game.GameBoard = gameBoard;
-            }
-            return game;
-        }
-    }
-}
+            var game = _serviceProvider.GetService(_gameList[gameBoard.GetType()]) as Game;
+            if (game != null)                          
+            {                                          
+                game.GameBoard = gameBoard;            
+            }                                          
+            return game;                               
+        }                                              
+    }                                                  
+}                                                      

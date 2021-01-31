@@ -13,26 +13,6 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
         private ITextRenderer _renderer;
 
         [Test]
-        public void IsMatch_PositiveNumber()
-        {
-            var lineBotAction = Substitute.For<ITextRenderer>();
-            
-            var isMatch = new GuessNumberGame().IsMatch("99");
-
-            Assert.IsTrue(isMatch);
-        }
-
-        [Test]
-        public void IsMatch_NegativeNumber()
-        {
-            var lineBotAction = Substitute.For<ITextRenderer>();
-            
-            var isMatch = new GuessNumberGame().IsMatch("-117");
-
-            Assert.IsFalse(isMatch);
-        }
-
-        [Test]
         public void StartGame_ShowMessage()
         {
             StartGameWith(87);

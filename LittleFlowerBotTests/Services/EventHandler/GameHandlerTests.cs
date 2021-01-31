@@ -29,7 +29,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
         public void GameOver_Should_Remove_Game()
         {
             GivenGameBoardExist();
-            GivenMockGame();
+            GivenRunningMockGame();
             GameAct("我認輸了");
             MockGameShouldReceiveGameOver();
         }
@@ -44,9 +44,12 @@ namespace LittleFlowerBotTests.Services.EventHandler
             _mockGame.Received(1).GameOver();
         }
 
-        private void GivenMockGame()
+        private void GivenRunningMockGame()
         {
             _mockGame = Substitute.For<Game>();
+            var mockBoard = Substitute.For<IGameBoard>();
+            mockBoard.IsGameOver().Returns(false);
+            _mockGame.GameBoard = mockBoard;
             _gameFactory.CreateGame(Arg.Any<IGameBoard>()).Returns(_mockGame);
         }
 

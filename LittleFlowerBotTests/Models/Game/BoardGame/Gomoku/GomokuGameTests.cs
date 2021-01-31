@@ -17,32 +17,6 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
         private GomokuGame _game;
 
         [Test]
-        public void IsMatchForPlaying_Success()
-        {
-            StartGame();
-
-            InputCmd("userA", "++");
-            InputCmd("userB", "++");
-
-            bool isMatch = _game.IsMatch("10,e");
-
-            Assert.IsTrue(isMatch);
-        }
-
-        [Test]
-        public void IsMatchForPlaying_Fail()
-        {
-            StartGame();
-
-            InputCmd("userA", "++");
-            InputCmd("userB", "++");
-
-            bool isMatch = _game.IsMatch("13,23");
-
-            Assert.IsFalse(isMatch);
-        }
-
-        [Test]
         public void GameOver_Win()
         {
             StartGame();

@@ -26,14 +26,9 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
                 Render("走法有誤");
             }
         }
-        
-        public override bool IsMatch(string cmd)
-        {
-            if (!GetBoard().IsPlayerFully())
-            {
-                return cmd.Equals("++");
-            }
 
+        protected override bool IsCmdValid(string cmd)
+        {
             return new Regex(@"^([1-9]|10),[a-i]>([1-9]|10),[a-i]$").IsMatch(cmd);
         }
     }

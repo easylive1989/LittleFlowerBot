@@ -24,14 +24,6 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         }
 
         [Test]
-        public void IsMatch_GameHasNoPlayer_ShouldJoinCommandMatch()
-        {
-            var isMatch = _chineseChessGame.IsMatch("++");
-            
-            Assert.IsTrue(isMatch);
-        }
-
-        [Test]
         public void Act_JoinSamePlayer_ShouldShowDuplicatedJoinMessge()
         {
             _chineseChessGame.Act(PlayerA, "++");
@@ -46,16 +38,6 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
             GivenTwoPlayerJoin();
 
             MessageShouldBe("遊戲開始");
-        }
-
-        [Test]
-        public void IsMatch_GameHasTwoPlayers_ShouldGameCommandMatch()
-        {
-            GivenTwoPlayerJoin();
-
-            var isMatch = _chineseChessGame.IsMatch("1,g>2,c");
-            
-            Assert.IsTrue(isMatch);
         }
 
         [Test]

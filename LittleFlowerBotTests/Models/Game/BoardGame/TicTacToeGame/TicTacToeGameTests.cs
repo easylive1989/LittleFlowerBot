@@ -10,8 +10,8 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
     [TestFixture]
     public class TicTacToeGameTests
     {
-        private ITextRenderer _renderer;
         private LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe.TicTacToeGame _game;
+        private ITextRenderer _renderer;
 
         [Test]
         public void StartGame_ShowInviteMessage()
@@ -30,52 +30,6 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
             InputCmd("userB", "++");
 
             MessageShouldBe("遊戲開始");
-        }
-
-        [Test]
-        public void IsMatchForJoinPlayer_Success()
-        {
-            StartGame();
-
-            bool isMatch = _game.IsMatch("++");
-
-            Assert.IsTrue(isMatch);
-        }
-
-        [Test]
-        public void IsMatchForJoinPlayer_Fail()
-        {
-            StartGame();
-
-            bool isMatch = _game.IsMatch("shouldNotMatch");
-
-            Assert.IsFalse(isMatch);
-        }
-
-        [Test]
-        public void IsMatchForPlaying_Success()
-        {
-            StartGame();
-
-            InputCmd("userA", "++");
-            InputCmd("userB", "++");
-
-            bool isMatch = _game.IsMatch("1,c");
-
-            Assert.IsTrue(isMatch);
-        }
-
-        [Test]
-        public void IsMatchForPlaying_Fail()
-        {
-            StartGame();
-
-            InputCmd("userA", "++");
-            InputCmd("userB", "++");
-
-            bool isMatch = _game.IsMatch("12,c");
-
-            Assert.IsFalse(isMatch);
         }
 
         [Test]
@@ -173,7 +127,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userB", "2,2");
+            InputCmd("userB", "2,a");
 
             MessageShouldBe("不是你的回合");
         }
@@ -191,6 +145,11 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
             MessageShouldBe("座標不合法");
         }
 
+        private void InputCmd(string userId, string cmd)
+        {
+            _game.Act(userId, cmd);
+        }
+
         private void MessageShouldBe(string message)
         {
             _renderer.Received(1).Render(message);
@@ -200,15 +159,11 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
         {
             _renderer = Substitute.For<ITextRenderer>();
             var dualGameResultsRepository = Substitute.For<IBoardGameResultsRepository>();
-            _game = new LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe.TicTacToeGame(dualGameResultsRepository);
+            _game = new LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe.TicTacToeGame(
+                dualGameResultsRepository);
             _game.TextRenderer = _renderer;
-            
-            _game.StartGame();
-        }
 
-        private void InputCmd(string userId, string cmd)
-        {
-            _game.Act(userId, cmd);
+            _game.StartGame();
         }
     }
 }

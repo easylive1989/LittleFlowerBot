@@ -15,16 +15,9 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
             GameBoard = new TicTacToeBoard();
         }
 
-        public override bool IsMatch(string cmd)
+        protected override bool IsCmdValid(string cmd)
         {
-            if (!GetBoard().IsPlayerFully())
-            {
-                return cmd.Equals("++");
-            }
-            else
-            {
-                return new Regex(@"^[1-3],[a-c]$").IsMatch(cmd);
-            }
+            return new Regex(@"^[1-3],[a-c]$").IsMatch(cmd);
         }
 
         public override void GameOver()

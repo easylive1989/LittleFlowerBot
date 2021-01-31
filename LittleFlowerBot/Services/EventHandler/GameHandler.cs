@@ -49,19 +49,17 @@ namespace LittleFlowerBot.Services.EventHandler
             {
                 var game = _gameFactory.CreateGame(gameBoard);
                 game.TextRenderer = _rendererFactory.Get(gameId);
-                if (game.IsMatch(cmd))
+                game.Act(userId, cmd);
+                if (game.GameBoard.IsGameOver())
                 {
-                    game.Act(userId, cmd);
-                    if (game.GameBoard.IsGameOver())
-                    {
-                        await _gameBoardCache.Remove(gameId);
-                    }
-                    else
-                    {
-                        await _gameBoardCache.Set(gameId, game.GameBoard);
-                    }
+                    await _gameBoardCache.Remove(gameId);
                 }
-                else if(cmd == "我認輸了" )
+                else
+                {
+                    await _gameBoardCache.Set(gameId, game.GameBoard);
+                }
+                
+                if(cmd == "我認輸了" )
                 {
                     game.GameOver();
                     await _gameBoardCache.Remove(gameId);

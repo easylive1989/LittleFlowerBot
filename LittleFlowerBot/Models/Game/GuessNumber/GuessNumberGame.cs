@@ -14,6 +14,11 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
         
         public override void Act(string userId, string cmd)
         {
+            if (IsCmdInvalid(cmd))
+            {
+                return;
+            }
+            
             var number = Int32.Parse(cmd);
             GetState()._guessCount++;
             if (IsGuessSuccess(number))
@@ -53,9 +58,9 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
             return number != GetState()._target;
         }
 
-        public override bool IsMatch(string cmd)
+        private bool IsCmdInvalid(string cmd)
         {
-            return new Regex(@"^[0-9]+$").IsMatch(cmd);
+            return !new Regex(@"^[0-9]+$").IsMatch(cmd);
         }
 
         public override void StartGame()

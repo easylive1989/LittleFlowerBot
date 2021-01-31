@@ -14,17 +14,10 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
             _boardGameResultsRepository = boardGameResultsRepository;
             GameBoard = new GomokuBoard();
         }
-        
-        public override bool IsMatch(string cmd)
+
+        protected override bool IsCmdValid(string cmd)
         {
-            if (!GetBoard().IsPlayerFully())
-            {
-                return cmd.Equals("++");
-            }
-            else
-            {
-                return new Regex(@"^([1-9]|1[0-5]),[a-o]$").IsMatch(cmd.ToLower());
-            }
+            return new Regex(@"^([1-9]|1[0-5]),[a-o]$").IsMatch(cmd.ToLower());
         }
         
         public override void GameOver()

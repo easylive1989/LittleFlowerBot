@@ -10,8 +10,6 @@ namespace LittleFlowerBot.Models.Game
 
         public abstract void Act(string userId, string cmd);
 
-        public abstract bool IsMatch(string cmd);
-
         public abstract void StartGame();
 
         protected void Render(string text)

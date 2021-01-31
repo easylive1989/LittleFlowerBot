@@ -5,10 +5,12 @@ namespace LittleFlowerBot.Models.Game.BoardGame
 {
     public abstract class BoardGame<T> : Game where T : Enum
     {
+        protected abstract bool IsCmdValid(string cmd);
+        
         public override void Act(string userId, string cmd)
         {
             var player = new Player(userId);
-            if (!GetBoard().IsPlayerFully())
+            if (cmd.Equals("++") && !GetBoard().IsPlayerFully())
             {
                 try
                 {
@@ -26,7 +28,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
                     Render(GetBoard().GetBoardString());
                 }
             }
-            else
+            else if(IsCmdValid(cmd) && GetBoard().IsPlayerFully())
             {
                 Move(cmd, player);
                 
