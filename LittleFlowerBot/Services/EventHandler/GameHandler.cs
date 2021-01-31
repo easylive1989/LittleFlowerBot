@@ -47,8 +47,7 @@ namespace LittleFlowerBot.Services.EventHandler
             var gameBoard = await _gameBoardCache.Get(gameId);
             if (gameBoard != null)
             {
-                var game = _gameFactory.CreateGame(gameBoard.GetType());
-                game.GameBoard = gameBoard;
+                var game = _gameFactory.CreateGame(gameBoard);
                 game.TextRenderer = _rendererFactory.Get(gameId);
                 if (game.IsMatch(cmd))
                 {

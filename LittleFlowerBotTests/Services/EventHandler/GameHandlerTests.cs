@@ -47,7 +47,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
         private void GivenMockGame()
         {
             _mockGame = Substitute.For<Game>();
-            _gameFactory.CreateGame(Arg.Any<Type>()).Returns(_mockGame);
+            _gameFactory.CreateGame(Arg.Any<IGameBoard>()).Returns(_mockGame);
         }
 
         private void GivenGameBoardExist()
