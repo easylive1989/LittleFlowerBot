@@ -13,7 +13,7 @@ namespace LittleFlowerBot.Services.EventHandler
 {
     public class RecordHandler : ILineEventHandler
     {
-        private readonly ITextRenderer _textRenderer;
+        private readonly IRendererFactory _rendererFactory;
         private readonly IBoardGameResultsRepository _boardGameResultsRepository;
         
         private readonly Dictionary<GameType, string> _gameNameDisplayDict = new Dictionary<GameType, string>()
@@ -22,9 +22,9 @@ namespace LittleFlowerBot.Services.EventHandler
             {GameType.TicTacToe, "井字遊戲"}
         };
 
-        public RecordHandler(ITextRenderer textRenderer, IBoardGameResultsRepository boardGameResultsRepository)
+        public RecordHandler(IRendererFactory rendererFactory, IBoardGameResultsRepository boardGameResultsRepository)
         {
-            _textRenderer = textRenderer;
+            _rendererFactory = rendererFactory;
             _boardGameResultsRepository = boardGameResultsRepository;
         }
 
@@ -46,7 +46,7 @@ namespace LittleFlowerBot.Services.EventHandler
 
             if (!gameResults.Any())
             {
-                _textRenderer.Render("你沒有任何戰績");
+                _rendererFactory.Get(@event.SenderId()).Render("你沒有任何戰績");
                 return;
             }
             
@@ -55,7 +55,7 @@ namespace LittleFlowerBot.Services.EventHandler
             {
                 stringBuilder.Append($"你在{gameResult.GameName}贏了{gameResult.WinCount}次，輸了{gameResult.LostCount}次\n");
             }
-            _textRenderer.Render(stringBuilder.ToString());
+            _rendererFactory.Get(@event.SenderId()).Render(stringBuilder.ToString());
         }
     }
 }
