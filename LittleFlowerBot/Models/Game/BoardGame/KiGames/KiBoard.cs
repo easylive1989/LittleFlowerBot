@@ -7,10 +7,10 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames
     [Serializable]
     public abstract class KiBoard : GameBoard<Ki>
     {
-        protected int CurMoveX { get; private set; }
-        protected int CurMoveY { get; private set; }
-        
-        protected Player CurPlayer { get; private set; }
+        public int CurMoveX { get; set; }
+        public int CurMoveY { get; set; }
+
+        public Player CurPlayer { get; set; }
         
         protected KiBoard(int row, int column) : base(row, column)
         {

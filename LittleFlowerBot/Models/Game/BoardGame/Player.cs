@@ -5,7 +5,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
     [Serializable]
     public class Player
     {
-        public string Id { get; }
+        public string Id { get; set; }
 
         public Player(string id)
         {

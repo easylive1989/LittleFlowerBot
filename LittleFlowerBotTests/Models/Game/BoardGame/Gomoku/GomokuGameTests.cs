@@ -1,8 +1,4 @@
-﻿using System;
-using LittleFlowerBot.DbContexts;
-using LittleFlowerBot.Models.Game;
-using LittleFlowerBot.Models.Game.BoardGame.KiGames;
-using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
+﻿using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
 using NSubstitute;

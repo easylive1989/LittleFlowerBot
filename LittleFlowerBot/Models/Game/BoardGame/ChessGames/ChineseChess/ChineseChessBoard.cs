@@ -11,9 +11,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
     [Serializable]
     public class ChineseChessBoard : GameBoard<ChineseChess>
     {
-        
-
-        private int _turn;
+        public int Turn { get; set; }
         
         public ChineseChessBoard() : base(10, 9)
         {
@@ -98,7 +96,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
                 
             MoveChess(step);
 
-            _turn++;
+            Turn++;
         }
 
         private bool IsMoveValid(Step step)
@@ -138,7 +136,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
 
         private bool IsYourTurn(Player player)
         {
-            var idx = _turn % PlayerMoveOrder.Count;
+            var idx = Turn % PlayerMoveOrder.Count;
             return PlayerMoveOrder[idx].Equals(player);
         }
         
