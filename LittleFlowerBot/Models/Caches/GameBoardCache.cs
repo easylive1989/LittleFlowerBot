@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LittleFlowerBot.Models.Game;
+using LittleFlowerBot.Models.Game.BoardGame;
+using LittleFlowerBot.Models.Game.BoardGame.KiGames;
+using LittleFlowerBot.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace LittleFlowerBot.Models.Caches
@@ -13,16 +17,19 @@ namespace LittleFlowerBot.Models.Caches
     {
         private readonly IDistributedCache _redisCache;
         private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions();
 
         public GameBoardCache(IDistributedCache redisCache)
         {
             _redisCache = redisCache;
+            _jsonSerializerOptions.Converters.Add(new DictionaryJsonConverter<Ki, Player>());
         }
 
         public async Task Set(string gameId, IGameBoard gameBoard)
         {
-            byte[] gameStateBytes = ObjectToByteArray(gameBoard);
-            await _redisCache.SetAsync(gameId, gameStateBytes);
+            var gameBoardJson = JsonSerializer.Serialize(gameBoard, _jsonSerializerOptions);
+            await _redisCache.SetStringAsync($"{gameId}:type", gameBoard.GetType().ToString());
+            await _redisCache.SetStringAsync($"{gameId}:state", gameBoardJson);
             _gameStateCache[gameId] = gameBoard;
         }
 
