@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame;
+using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames;
+using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
+using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
+using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Utils;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -40,10 +42,22 @@ namespace LittleFlowerBot.Models.Caches
                 return _gameStateCache[gameId];
             }
             
-            var gameStateBytes = await _redisCache.GetAsync(gameId);
-            if (gameStateBytes != null)
+            var gameTypeString = await _redisCache.GetStringAsync($"{gameId}:type");
+            var gameStateString = await _redisCache.GetStringAsync($"{gameId}:state");
+            if (gameTypeString != null && gameStateString != null)
             {
-                return (IGameBoard)ByteArrayToObject(gameStateBytes);
+                var gameType = Enum.Parse<GameType>(gameTypeString);
+                switch (gameType)
+                {
+                    case GameType.GuessNumber:
+                        return JsonSerializer.Deserialize<GuessNumberBoard>(gameStateString, _jsonSerializerOptions);
+                    case GameType.TicTacToe:
+                        return JsonSerializer.Deserialize<TicTacToeBoard>(gameStateString, _jsonSerializerOptions);
+                    case GameType.Gomoku:
+                        return JsonSerializer.Deserialize<GomokuBoard>(gameStateString, _jsonSerializerOptions);
+                    case GameType.ChineseChess:
+                        return JsonSerializer.Deserialize<ChineseChessBoard>(gameStateString, _jsonSerializerOptions);
+                }
             }
 
             return null;
@@ -58,29 +72,6 @@ namespace LittleFlowerBot.Models.Caches
         public List<string> GetGameIdList()
         {
             return _gameStateCache.Keys.ToList();
-        }
-        
-        private byte[] ObjectToByteArray(Object obj)
-        {
-            if(obj == null)
-                return null;
-
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
-            bf.Serialize(ms, obj);
-
-            return ms.ToArray();
-        }
-
-        private Object ByteArrayToObject(byte[] arrBytes)
-        {
-            MemoryStream memStream = new MemoryStream();
-            BinaryFormatter binForm = new BinaryFormatter();
-            memStream.Write(arrBytes, 0, arrBytes.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-            Object obj = (Object) binForm.Deserialize(memStream);
-
-            return obj;
         }
     }
 }
