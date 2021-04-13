@@ -21,6 +21,14 @@ namespace LittleFlowerBot.Models.Caches
         private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions();
 
+        private Dictionary<Type, GameType> _gameTypesMap = new Dictionary<Type, GameType>()
+        {
+            {typeof(TicTacToeBoard), GameType.TicTacToe},
+            {typeof(GomokuBoard), GameType.Gomoku},
+            {typeof(ChineseChessBoard), GameType.ChineseChess},
+            {typeof(GuessNumberBoard), GameType.GuessNumber},
+        };
+
         public GameBoardCache(IDistributedCache redisCache)
         {
             _redisCache = redisCache;
@@ -30,7 +38,8 @@ namespace LittleFlowerBot.Models.Caches
         public async Task Set(string gameId, IGameBoard gameBoard)
         {
             var gameBoardJson = JsonSerializer.Serialize(gameBoard, _jsonSerializerOptions);
-            await _redisCache.SetStringAsync($"{gameId}:type", gameBoard.GetType().ToString());
+
+            await _redisCache.SetStringAsync($"{gameId}:type", ((int)_gameTypesMap[gameBoard.GetType()]).ToString());
             await _redisCache.SetStringAsync($"{gameId}:state", gameBoardJson);
             _gameStateCache[gameId] = gameBoard;
         }
