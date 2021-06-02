@@ -45,7 +45,7 @@ namespace LittleFlowerBot
             services.AddDistributedRedisCache(options =>
             {
                 options.InstanceName = "LittleFlowerBot";
-                options.Configuration = GetRedisUrl(Configuration["Redis:Host"]);
+                options.Configuration = GetRedisUrl(Environment.GetEnvironmentVariable("REDIS_URL"));
             });
             
             services.AddMemoryCache();
@@ -74,7 +74,7 @@ namespace LittleFlowerBot
 
             services.AddHealthChecks()
                 .AddNpgSql(Environment.GetEnvironmentVariable("DATABASE_URL"), name: "PostgreSQL")
-                .AddRedis(GetRedisUrl(Configuration["Redis:Host"]), name: "Redis");
+                .AddRedis(GetRedisUrl(Environment.GetEnvironmentVariable("REDIS_URL")), name: "Redis");
             
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
