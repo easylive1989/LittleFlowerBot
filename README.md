@@ -1,5 +1,6 @@
 # 小遊戲 Line Bot
 ![build](https://github.com/easylive1989/LittleFlowerBot/actions/workflows/dotnetcore.yml/badge.svg)
+[![BCH compliance](https://bettercodehub.com/edge/badge/easylive1989/LittleFlowerBot?branch=master)](https://bettercodehub.com/)
 ## 怎麼玩
 在某個群組加入LittleFlowerBot與LineNotify，在群組中輸入我要註冊並點擊回覆訊息中的連結，並關聯此群組。完成關聯之後，輸入下列文字可玩遊戲：
 - 玩五子棋
