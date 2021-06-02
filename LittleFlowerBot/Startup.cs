@@ -39,13 +39,13 @@ namespace LittleFlowerBot
         {
             services.AddDbContext<LittleFlowerBotContext>(options =>
             {
-                options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddDistributedRedisCache(options =>
             {
                 options.InstanceName = "LittleFlowerBot";
-                options.Configuration = Environment.GetEnvironmentVariable("REDIS_URL");
+                options.Configuration = GetRedisUrl(Configuration["Redis:Host"]);
             });
             
             services.AddMemoryCache();
@@ -74,7 +74,7 @@ namespace LittleFlowerBot
 
             services.AddHealthChecks()
                 .AddNpgSql(Environment.GetEnvironmentVariable("DATABASE_URL"), name: "PostgreSQL")
-                .AddRedis(Environment.GetEnvironmentVariable("REDIS_URL"), name: "Redis");
+                .AddRedis(GetRedisUrl(Configuration["Redis:Host"]), name: "Redis");
             
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
@@ -133,6 +133,13 @@ namespace LittleFlowerBot
 
                 context.Database.Migrate();
             }
+        }
+
+        private string GetRedisUrl(String url)
+        {
+            var urlParts = url.Split("@");
+            var password = urlParts[0].Split("redis://h:")[1].Trim();
+            return $"{urlParts[1]},password={password}";
         }
     }
 }
