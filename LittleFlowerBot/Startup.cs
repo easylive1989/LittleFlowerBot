@@ -73,7 +73,7 @@ namespace LittleFlowerBot
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
-                .AddNpgSql(Environment.GetEnvironmentVariable("DATABASE_URL"), name: "PostgreSQL")
+                .AddNpgSql(Configuration.GetConnectionString("DefaultConnection"), name: "PostgreSQL")
                 .AddRedis(GetRedisUrl(Environment.GetEnvironmentVariable("REDIS_URL")), name: "Redis");
             
             services.AddScoped<ConsoleRenderer>();
