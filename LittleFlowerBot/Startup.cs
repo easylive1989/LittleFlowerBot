@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.Models.Caches;
@@ -76,6 +77,8 @@ namespace LittleFlowerBot
                 .AddRedis(Configuration["Redis:Host"], name: "Redis");
 
 
+            Console.WriteLine($"redis env: {Environment.GetEnvironmentVariable("REDIS_URL")}");
+            Console.WriteLine($"redis env: {Environment.GetEnvironmentVariable("REDIS_TLS_URL")}");
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
             if (WebHostEnvironment.IsDevelopment())
