@@ -39,13 +39,13 @@ namespace LittleFlowerBot
         {
             services.AddDbContext<LittleFlowerBotContext>(options =>
             {
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
             });
 
             services.AddDistributedRedisCache(options =>
             {
                 options.InstanceName = "LittleFlowerBot";
-                options.Configuration = Configuration["Redis:Host"];
+                options.Configuration = Environment.GetEnvironmentVariable("REDIS_URL");
             });
             
             services.AddMemoryCache();
@@ -73,10 +73,9 @@ namespace LittleFlowerBot
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddHealthChecks()
-                .AddNpgSql(Configuration["ConnectionStrings:DefaultConnection"], name: "PostgreSQL")
+                .AddNpgSql(Environment.GetEnvironmentVariable("DATABASE_URL"), name: "PostgreSQL")
                 .AddRedis(Environment.GetEnvironmentVariable("REDIS_URL"), name: "Redis");
-
-
+            
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
             if (WebHostEnvironment.IsDevelopment())
