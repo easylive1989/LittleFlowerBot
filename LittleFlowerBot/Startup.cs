@@ -74,11 +74,9 @@ namespace LittleFlowerBot
 
             services.AddHealthChecks()
                 .AddNpgSql(Configuration["ConnectionStrings:DefaultConnection"], name: "PostgreSQL")
-                .AddRedis(Configuration["Redis:Host"], name: "Redis");
+                .AddRedis(Environment.GetEnvironmentVariable("REDIS_URL"), name: "Redis");
 
 
-            Console.WriteLine($"redis env: {Environment.GetEnvironmentVariable("REDIS_URL")}");
-            Console.WriteLine($"redis env: {Environment.GetEnvironmentVariable("REDIS_TLS_URL")}");
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
             if (WebHostEnvironment.IsDevelopment())
