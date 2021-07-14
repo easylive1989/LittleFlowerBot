@@ -37,6 +37,8 @@ namespace LittleFlowerBot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine($"Database url: {Environment.GetEnvironmentVariable("DATABASE_URL")}");
+            Console.WriteLine($"Redis url: {Environment.GetEnvironmentVariable("HEROKU_REDIS_MAUVE_URL")}");
             services.AddDbContext<LittleFlowerBotContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
@@ -45,7 +47,7 @@ namespace LittleFlowerBot
             services.AddDistributedRedisCache(options =>
             {
                 options.InstanceName = "LittleFlowerBot";
-                options.Configuration = GetRedisUrl(Environment.GetEnvironmentVariable("REDIS_URL"));
+                options.Configuration = GetRedisUrl(Environment.GetEnvironmentVariable("HEROKU_REDIS_MAUVE_URL"));
             });
             
             services.AddMemoryCache();
@@ -74,7 +76,7 @@ namespace LittleFlowerBot
 
             services.AddHealthChecks()
                 .AddNpgSql(Configuration.GetConnectionString("DefaultConnection"), name: "PostgreSQL")
-                .AddRedis(GetRedisUrl(Environment.GetEnvironmentVariable("REDIS_URL")), name: "Redis");
+                .AddRedis(GetRedisUrl(Environment.GetEnvironmentVariable("HEROKU_REDIS_MAUVE_URL")), name: "Redis");
             
             services.AddScoped<ConsoleRenderer>();
             services.AddScoped<LineNotifySender>();
@@ -137,7 +139,6 @@ namespace LittleFlowerBot
 
         private string GetRedisUrl(String url)
         {
-            Console.WriteLine($"Redis url: {url}");
             var urlParts = url.Split("@");
             var password = urlParts[0].Split("redis://h:")[1].Trim();
             return $"{urlParts[1]},password={password}";
