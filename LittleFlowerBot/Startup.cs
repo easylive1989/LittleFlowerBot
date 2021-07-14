@@ -137,6 +137,7 @@ namespace LittleFlowerBot
 
         private string GetRedisUrl(String url)
         {
+            Console.WriteLine($"Redis url: {url}");
             var urlParts = url.Split("@");
             var password = urlParts[0].Split("redis://h:")[1].Trim();
             return $"{urlParts[1]},password={password}";

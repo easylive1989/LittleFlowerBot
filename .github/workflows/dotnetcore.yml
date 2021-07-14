@@ -1,9 +1,6 @@
 name: Little Flower Bot
 
-on:
-  push:
-    branches: [ master ]
-
+on: [push, workflow_dispatch]
 
 env:
   HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
