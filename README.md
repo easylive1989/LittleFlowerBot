@@ -22,8 +22,3 @@
 - Redis
 - PostgreSQL
 - Heroku
-## 設定
-- 設定 postgrel connection string
-- 設定 redis connection string
-- 設定 line notify token
-- 設定 line bot webhook endpoint
