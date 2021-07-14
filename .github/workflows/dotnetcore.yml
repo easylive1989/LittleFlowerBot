@@ -1,16 +1,24 @@
 name: Little Flower Bot
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
     inputs:
       name:
         description: 'Person to greet'
         required: false
         default: 'Paul'
+  push:
+    branches: [ master ]
+  
+# on:
+#   push:
+#     branches: [ master ]
+#   workflow_dispatch:
+#     inputs:
+#       name:
+#         description: 'Person to greet'
+#         required: false
+#         default: 'Paul'
 
 env:
   HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
