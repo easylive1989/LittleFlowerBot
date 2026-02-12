@@ -3,6 +3,7 @@ using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
 {
@@ -52,7 +53,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
 
             var isGameOver = _game.GameBoard.IsGameOver();
             
-            Assert.IsFalse(isGameOver);
+            ClassicAssert.IsFalse(isGameOver);
         }
 
 

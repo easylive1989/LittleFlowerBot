@@ -1,6 +1,7 @@
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess.StepRule;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess.StepRule
 {
@@ -32,14 +33,14 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess.StepRule
         {
             var isMatch = StepRule.IsMatch(Board, Step);
 
-            Assert.IsFalse(isMatch);
+            ClassicAssert.IsFalse(isMatch);
         }
         
         protected void StepShouldMatch()
         {
             var isMatch = StepRule.IsMatch(Board, Step);
 
-            Assert.IsTrue(isMatch);
+            ClassicAssert.IsTrue(isMatch);
         }
     }
 }
