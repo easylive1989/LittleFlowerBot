@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using LittleFlowerBot.Models.Exceptions;
 using LittleFlowerBot.Models.GameExceptions;
 using LittleFlowerBot.Models.Responses;
 
@@ -102,14 +101,6 @@ public class GlobalExceptionHandlerMiddleware
                 "GameError",
                 "座標無效",
                 400,
-                ex.Message,
-                traceId),
-
-            // Line Notify 相關例外
-            LineNotifyTokenInvalidException ex => ErrorResponse.Create(
-                "LineNotifyError",
-                "Line Notify Token 無效",
-                401,
                 ex.Message,
                 traceId),
 

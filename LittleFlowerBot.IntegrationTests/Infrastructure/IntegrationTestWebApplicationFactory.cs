@@ -108,9 +108,6 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
             services.AddScoped<ITextRenderer>(sp => sp.GetRequiredService<TestTextRenderer>());
             services.RemoveAll<IMessage>();
             services.AddScoped<IMessage>(sp => sp.GetRequiredService<TestTextRenderer>());
-            services.RemoveAll<ILineNotifySubscription>();
-            services.AddScoped<ILineNotifySubscription>(sp => sp.GetRequiredService<TestTextRenderer>());
-
             // 確保資料庫已建立並執行遷移
             var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+using System;
 using LittleFlowerBot.Models.Message;
 
 namespace LittleFlowerBot.Models.Renderer
 {
-    public class ConsoleRenderer : ITextRenderer, IMessage, ILineNotifySubscription
+    public class ConsoleRenderer : ITextRenderer, IMessage
     {
         public void Render(string text)
         {
@@ -14,22 +13,6 @@ namespace LittleFlowerBot.Models.Renderer
         public void Reply(string replyToken, string text)
         {
             Console.Write(text);
-        }
-
-        public Task SaveToken(string senderId, string code)
-        {
-            Console.Write(code);
-            return Task.CompletedTask;
-        }
-
-        public string GenerateLink(string guid)
-        {
-            return guid;
-        }
-
-        public bool IsRegistered(string senderId)
-        {
-            return false;
         }
     }
 }

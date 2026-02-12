@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using isRock.LineBot;
 using LittleFlowerBot.Extensions;
-using LittleFlowerBot.Models.Requests;
 using LittleFlowerBot.Services.EventHandler;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +14,7 @@ namespace LittleFlowerBot.Controllers
     public class LineChatController : ControllerBase
     {
         private readonly IEnumerable<ILineEventHandler> _eventHandlers;
-        
+
         public LineChatController(IEnumerable<ILineEventHandler> eventHandlers)
         {
             _eventHandlers = eventHandlers;
@@ -37,14 +36,6 @@ namespace LittleFlowerBot.Controllers
                 }
             }
 
-            return Ok();
-        }
-        
-        [HttpPost("Notify")]
-        public async Task<ActionResult> NotifyCallback([FromForm]LineNotifyRequest request)
-        {
-            var eventHandler = _eventHandlers.First(handler => handler is RegistrationHandler);
-            await ((RegistrationHandler)eventHandler).Subscribe(request.Code, request.State);
             return Ok();
         }
 

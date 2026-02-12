@@ -36,7 +36,7 @@ namespace LittleFlowerBotTests.Services.EventHandler
 
         private void GameAct(string action)
         {
-            _gameHandler.Act("gameId", "userId", action);
+            _gameHandler.Act("gameId", "userId", action, "replyToken");
         }
 
         private void MockGameShouldReceiveGameOver()

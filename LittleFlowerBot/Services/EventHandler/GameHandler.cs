@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using isRock.LineBot;
@@ -22,7 +22,7 @@ namespace LittleFlowerBot.Services.EventHandler
             {"玩五子棋", typeof(GomokuBoard)},
             {"玩象棋", typeof(ChineseChessBoard)},
         };
-        
+
         private readonly IGameFactory _gameFactory;
         private readonly IGameBoardCache _gameBoardCache;
         private readonly IRendererFactory _rendererFactory;
@@ -39,16 +39,18 @@ namespace LittleFlowerBot.Services.EventHandler
             string gameId = @event.SenderId();
             var userId = @event.UserId();
             var text = @event.Text();
-            await Act(gameId, userId, text);
+            await Act(gameId, userId, text, @event.replyToken);
         }
-        
-        public async Task Act(string gameId, string userId, string cmd)
+
+        public async Task Act(string gameId, string userId, string cmd, string replyToken = null)
         {
+            var renderer = _rendererFactory.Get(replyToken);
+
             var gameBoard = await _gameBoardCache.Get(gameId);
             if (gameBoard != null)
             {
                 var game = _gameFactory.CreateGame(gameBoard);
-                game.TextRenderer = _rendererFactory.Get(gameId);
+                game.TextRenderer = renderer;
                 game.Act(userId, cmd);
                 if (game.GameBoard.IsGameOver())
                 {
@@ -58,7 +60,7 @@ namespace LittleFlowerBot.Services.EventHandler
                 {
                     await _gameBoardCache.Set(gameId, game.GameBoard);
                 }
-                
+
                 if(cmd == "我認輸了" )
                 {
                     game.GameOver();
@@ -71,11 +73,13 @@ namespace LittleFlowerBot.Services.EventHandler
                 {
                     var gameType = _cmdGameTypeDict[cmd];
                     var game = _gameFactory.CreateGame(gameType);
-                    game.TextRenderer = _rendererFactory.Get(gameId);
+                    game.TextRenderer = renderer;
                     await _gameBoardCache.Set(gameId, game.GameBoard);
                     game.StartGame();
                 }
             }
+
+            (renderer as BufferedReplyRenderer)?.Flush();
         }
 
         private bool IsCreateGameCmd(string cmd)

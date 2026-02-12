@@ -15,7 +15,7 @@ namespace LittleFlowerBot.Services.EventHandler
     {
         private readonly IRendererFactory _rendererFactory;
         private readonly IBoardGameResultsRepository _boardGameResultsRepository;
-        
+
         private readonly Dictionary<GameType, string> _gameNameDisplayDict = new Dictionary<GameType, string>()
         {
             {GameType.Gomoku, "五子棋"},
@@ -34,7 +34,9 @@ namespace LittleFlowerBot.Services.EventHandler
             {
                 return;
             }
-            
+
+            var renderer = _rendererFactory.Get(@event.replyToken);
+
             var dualPlayerGameResults = await _boardGameResultsRepository.GetResult(@event.UserId());
             var gameResults = dualPlayerGameResults.GroupBy(result => result.GameType).Select(results => new
             {
@@ -46,16 +48,18 @@ namespace LittleFlowerBot.Services.EventHandler
 
             if (!gameResults.Any())
             {
-                _rendererFactory.Get(@event.SenderId()).Render("你沒有任何戰績");
+                renderer.Render("你沒有任何戰績");
+                (renderer as BufferedReplyRenderer)?.Flush();
                 return;
             }
-            
+
             var stringBuilder = new StringBuilder();
             foreach (var gameResult in gameResults)
             {
                 stringBuilder.Append($"你在{gameResult.GameName}贏了{gameResult.WinCount}次，輸了{gameResult.LostCount}次\n");
             }
-            _rendererFactory.Get(@event.SenderId()).Render(stringBuilder.ToString());
+            renderer.Render(stringBuilder.ToString());
+            (renderer as BufferedReplyRenderer)?.Flush();
         }
     }
 }

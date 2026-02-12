@@ -57,7 +57,6 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
 // 註冊快取服務
-builder.Services.AddSingleton<RegistrationCache>();
 builder.Services.AddSingleton<IGameBoardCache, GameBoardCache>();
 
 // 註冊工廠服務
@@ -66,7 +65,6 @@ builder.Services.AddScoped<IRendererFactory, RendererFactory>();
 
 // 註冊 Repository
 builder.Services.AddScoped<IBoardGameResultsRepository, BoardGameResultsRepository>();
-builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
 // 註冊遊戲服務
 builder.Services.AddScoped<TicTacToeGame>();
@@ -78,22 +76,19 @@ builder.Services.AddScoped<GuessNumberGame>();
 builder.Services.AddScoped<ILineEventHandler, GameHandler>();
 builder.Services.AddScoped<ILineEventHandler, RecordHandler>();
 builder.Services.AddScoped<GameHandler, GameHandler>();
-builder.Services.AddScoped<ILineEventHandler, RegistrationHandler>();
 
 // 註冊 Renderer
 builder.Services.AddScoped<ConsoleRenderer>();
-builder.Services.AddScoped<LineNotifySender>();
+builder.Services.AddScoped<BufferedReplyRenderer>();
 
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddScoped<ITextRenderer, ConsoleRenderer>();
-    builder.Services.AddScoped<ILineNotifySubscription, ConsoleRenderer>();
     builder.Services.AddScoped<IMessage, ConsoleRenderer>();
 }
 else
 {
-    builder.Services.AddScoped<ITextRenderer, LineNotifySender>();
-    builder.Services.AddScoped<ILineNotifySubscription, LineNotifySubscription>();
+    builder.Services.AddScoped<ITextRenderer, BufferedReplyRenderer>();
     builder.Services.AddScoped<IMessage, LineMessage>();
 }
 

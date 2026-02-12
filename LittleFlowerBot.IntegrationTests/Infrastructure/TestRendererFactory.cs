@@ -15,5 +15,5 @@ public class TestRendererFactory : IRendererFactory
         _renderer = renderer;
     }
 
-    public ITextRenderer Get(string senderId) => _renderer;
+    public ITextRenderer Get(string replyToken) => _renderer;
 }

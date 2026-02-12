@@ -14,17 +14,17 @@ namespace LittleFlowerBot.Models.Renderer
             _environment = environment;
             _serviceProvider = serviceProvider;
         }
-        
-        public ITextRenderer Get(string senderId)
+
+        public ITextRenderer Get(string replyToken)
         {
             if (_environment.IsDevelopment())
             {
                 return GetRenderer<ConsoleRenderer>();
             }
 
-            var lineNotifySender = GetRenderer<LineNotifySender>();
-            lineNotifySender.SenderId = senderId;
-            return lineNotifySender;
+            var renderer = GetRenderer<BufferedReplyRenderer>();
+            renderer.ReplyToken = replyToken;
+            return renderer;
         }
 
         private T GetRenderer<T>() where T : ITextRenderer
