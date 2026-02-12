@@ -1,4 +1,6 @@
 using LittleFlowerBot.DbContexts;
+using LittleFlowerBot.Models.Message;
+using LittleFlowerBot.Models.Renderer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -49,6 +51,11 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
     /// </summary>
     public string RedisConnectionString => _redisContainer.GetConnectionString();
 
+    /// <summary>
+    /// 暴露 DI 容器供測試存取（用於查詢 DB、Cache 等）
+    /// </summary>
+    public IServiceProvider ServiceProvider => Services;
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         // 使用測試環境
@@ -92,6 +99,17 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
                     $"{RedisConnectionString},password=test_redis_password",
                     name: "Redis",
                     tags: new[] { "cache", "redis" });
+
+            // 註冊測試用 Renderer 替身
+            services.AddSingleton<TestTextRenderer>();
+            services.RemoveAll<IRendererFactory>();
+            services.AddSingleton<IRendererFactory, TestRendererFactory>();
+            services.RemoveAll<ITextRenderer>();
+            services.AddScoped<ITextRenderer>(sp => sp.GetRequiredService<TestTextRenderer>());
+            services.RemoveAll<IMessage>();
+            services.AddScoped<IMessage>(sp => sp.GetRequiredService<TestTextRenderer>());
+            services.RemoveAll<ILineNotifySubscription>();
+            services.AddScoped<ILineNotifySubscription>(sp => sp.GetRequiredService<TestTextRenderer>());
 
             // 確保資料庫已建立並執行遷移
             var serviceProvider = services.BuildServiceProvider();

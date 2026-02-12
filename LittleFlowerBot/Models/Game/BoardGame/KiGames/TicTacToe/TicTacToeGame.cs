@@ -23,7 +23,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
         public override void GameOver()
         {
             base.GameOver();
-            var gameOverTime = DateTime.Now;
+            var gameOverTime = DateTime.UtcNow;
             _boardGameResultsRepository.AddGameResult(new BoardGameResult()
             {
                 UserId = GetKiBoard().GetCurrentPlayer().Id,

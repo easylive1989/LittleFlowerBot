@@ -11,15 +11,18 @@ public class HealthCheckSteps
 {
     private readonly HttpClient _httpClient;
     private readonly IntegrationTestWebApplicationFactory _factory;
+    private readonly ScenarioContext _scenarioContext;
     private HttpResponseMessage? _response;
     private JsonDocument? _jsonResponse;
 
     public HealthCheckSteps(
         HttpClient httpClient,
-        IntegrationTestWebApplicationFactory factory)
+        IntegrationTestWebApplicationFactory factory,
+        ScenarioContext scenarioContext)
     {
         _httpClient = httpClient;
         _factory = factory;
+        _scenarioContext = scenarioContext;
     }
 
     [Given(@"測試環境已準備就緒")]
@@ -39,17 +42,24 @@ public class HealthCheckSteps
     [Then(@"回應狀態碼應該是 (.*)")]
     public async Task Then回應狀態碼應該是(int statusCode)
     {
-        _response.Should().NotBeNull();
+        // 優先使用本地 response，若無則從 ScenarioContext 取得（供跨步驟類別共用）
+        var response = _response;
+        if (response == null && _scenarioContext.TryGetValue("LastHttpResponse", out HttpResponseMessage? contextResponse))
+        {
+            response = contextResponse;
+        }
+
+        response.Should().NotBeNull();
 
         // 如果狀態碼不符，輸出響應內容以便偵錯
-        if (_response!.StatusCode != (HttpStatusCode)statusCode)
+        if (response!.StatusCode != (HttpStatusCode)statusCode)
         {
-            var content = await _response.Content.ReadAsStringAsync();
-            Console.WriteLine($"實際狀態碼: {(int)_response.StatusCode} ({_response.StatusCode})");
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"實際狀態碼: {(int)response.StatusCode} ({response.StatusCode})");
             Console.WriteLine($"響應內容: {content}");
         }
 
-        _response.StatusCode.Should().Be((HttpStatusCode)statusCode);
+        response.StatusCode.Should().Be((HttpStatusCode)statusCode);
     }
 
     [Then(@"回應內容應該是 JSON 格式")]

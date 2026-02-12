@@ -1,5 +1,9 @@
 using BoDi;
+using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.IntegrationTests.Infrastructure;
+using LittleFlowerBot.Models.Caches;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using TechTalk.SpecFlow;
 
 namespace LittleFlowerBot.IntegrationTests.Hooks;
@@ -37,7 +41,7 @@ public class TestHooks
 
     /// <summary>
     /// 在每個情境執行前執行
-    /// 注入依賴到情境容器
+    /// 注入依賴到情境容器，並清理測試狀態
     /// </summary>
     [BeforeScenario]
     public void BeforeScenario(IObjectContainer objectContainer)
@@ -50,6 +54,27 @@ public class TestHooks
         // 將依賴注入到情境容器
         objectContainer.RegisterInstanceAs(_factory);
         objectContainer.RegisterInstanceAs(_httpClient);
+
+        // 清除測試訊息記錄
+        TestTextRenderer.Clear();
+
+        // 清理遊戲快取（本地記憶體 + Redis），避免場景間遊戲狀態汙染
+        // 先清理本地記憶體快取
+        var gameBoardCache = _factory.ServiceProvider.GetRequiredService<IGameBoardCache>();
+        foreach (var gameId in gameBoardCache.GetGameIdList())
+        {
+            gameBoardCache.Remove(gameId).GetAwaiter().GetResult();
+        }
+        // 再清理 Redis（FLUSHDB 確保不留殘餘）
+        var redisConnectionString = $"{_factory.RedisConnectionString},password=test_redis_password,allowAdmin=true";
+        using var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+        redis.GetServer(redis.GetEndPoints()[0]).FlushDatabase();
+
+        // 清理資料庫測試資料，避免場景間資料汙染
+        using var scope = _factory.ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
+        dbContext.BoardGameGameResults.RemoveRange(dbContext.BoardGameGameResults);
+        dbContext.SaveChanges();
     }
 
     /// <summary>
