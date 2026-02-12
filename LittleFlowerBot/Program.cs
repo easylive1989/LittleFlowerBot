@@ -54,6 +54,7 @@ else
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
+builder.Services.AddRazorPages();
 
 // 註冊快取服務
 builder.Services.AddSingleton<RegistrationCache>();
@@ -98,13 +99,6 @@ else
 
 // 設定 Health Checks
 var healthChecksBuilder = builder.Services.AddHealthChecks()
-    // 資料庫健康檢查
-    .AddNpgSql(
-        builder.Configuration.GetConnectionString("DefaultConnection")!,
-        name: "PostgreSQL",
-        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
-        tags: new[] { "database", "postgresql" })
-
     // 應用程式健康檢查
     .AddCheck<ApplicationHealthCheck>(
         "Application",
@@ -115,14 +109,26 @@ var healthChecksBuilder = builder.Services.AddHealthChecks()
         "Memory",
         tags: new[] { "memory", "performance" });
 
-// 只在 Redis 配置可用時才加入 Redis 健康檢查
-if (!string.IsNullOrEmpty(redisConnectionString))
+// 在非測試環境中才加入資料庫和 Redis 健康檢查
+// 測試環境會在測試工廠中註冊自己的健康檢查
+if (!builder.Environment.IsEnvironment("Testing"))
 {
-    healthChecksBuilder.AddRedis(
-        redisConnectionString,
-        name: "Redis",
-        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded,
-        tags: new[] { "cache", "redis" });
+    // 資料庫健康檢查
+    healthChecksBuilder.AddNpgSql(
+        builder.Configuration.GetConnectionString("DefaultConnection")!,
+        name: "PostgreSQL",
+        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
+        tags: new[] { "database", "postgresql" });
+
+    // 只在 Redis 配置可用時才加入 Redis 健康檢查
+    if (!string.IsNullOrEmpty(redisConnectionString))
+    {
+        healthChecksBuilder.AddRedis(
+            redisConnectionString,
+            name: "Redis",
+            failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded,
+            tags: new[] { "cache", "redis" });
+    }
 }
 
 var app = builder.Build();
@@ -186,3 +192,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// 讓整合測試可以引用此專案
+public partial class Program { }
