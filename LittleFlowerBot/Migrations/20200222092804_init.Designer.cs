@@ -9,6 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace LittleFlowerBot.Migrations
 {
+#pragma warning disable CS8981
     [DbContext(typeof(LittleFlowerBotContext))]
     [Migration("20200222092804_init")]
     partial class init

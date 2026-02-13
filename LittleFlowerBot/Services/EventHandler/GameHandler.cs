@@ -42,7 +42,7 @@ namespace LittleFlowerBot.Services.EventHandler
             await Act(gameId, userId, text, @event.replyToken);
         }
 
-        public async Task Act(string gameId, string userId, string cmd, string replyToken = null)
+        public async Task Act(string gameId, string userId, string cmd, string? replyToken = null)
         {
             var renderer = _rendererFactory.Get(replyToken);
 
