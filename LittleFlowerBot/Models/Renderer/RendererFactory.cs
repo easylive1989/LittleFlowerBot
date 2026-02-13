@@ -15,7 +15,7 @@ namespace LittleFlowerBot.Models.Renderer
             _serviceProvider = serviceProvider;
         }
 
-        public ITextRenderer Get(string replyToken)
+        public ITextRenderer Get(string? replyToken)
         {
             if (_environment.IsDevelopment())
             {
@@ -29,7 +29,7 @@ namespace LittleFlowerBot.Models.Renderer
 
         private T GetRenderer<T>() where T : ITextRenderer
         {
-            return (T)_serviceProvider.GetService(typeof(T));
+            return (T)(_serviceProvider.GetService(typeof(T)) ?? throw new InvalidOperationException($"Service {typeof(T)} is not registered."));
         }
     }
 }

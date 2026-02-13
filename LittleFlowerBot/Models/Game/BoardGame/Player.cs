@@ -12,7 +12,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
             Id = id;
         }
         
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var id = obj as Player;
 

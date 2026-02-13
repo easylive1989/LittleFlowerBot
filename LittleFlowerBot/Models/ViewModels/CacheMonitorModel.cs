@@ -4,6 +4,6 @@ namespace LittleFlowerBot.Models.ViewModels
 {
     public class CacheMonitorModel
     {
-        public List<string> GameIdList { get; set; }
+        public List<string> GameIdList { get; set; } = new();
     }
 }

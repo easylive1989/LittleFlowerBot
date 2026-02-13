@@ -8,7 +8,7 @@ namespace LittleFlowerBot.Models.Renderer
         private readonly IMessage _message;
         private readonly List<string> _buffer = new();
 
-        public string ReplyToken { get; set; }
+        public string? ReplyToken { get; set; }
 
         public BufferedReplyRenderer(IMessage message)
         {

@@ -25,9 +25,14 @@ namespace LittleFlowerBot.Utils
 
         public override IDictionary<TKey, TValue> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var dictionaryWithStringKey = (Dictionary<string, TValue>)JsonSerializer.Deserialize(ref reader, typeof(Dictionary<string, TValue>), options);
+            var dictionaryWithStringKey = (Dictionary<string, TValue>?)JsonSerializer.Deserialize(ref reader, typeof(Dictionary<string, TValue>), options);
 
             var dictionary = new Dictionary<TKey, TValue>();
+
+            if (dictionaryWithStringKey == null)
+            {
+                return dictionary;
+            }
 
             foreach (var kvp in dictionaryWithStringKey)
             {
