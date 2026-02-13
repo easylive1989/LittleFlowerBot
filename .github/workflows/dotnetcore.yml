@@ -2,41 +2,17 @@ name: Little Flower Bot
 
 on: [push, workflow_dispatch]
 
-env:
-  HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
-  HEROKU_ACCOUNT: ${{ secrets.HEROKU_ACCOUNT }}
-  POSTGRE_SQL_CONN_STR: ${{ secrets.POSTGRE_SQL_CONN_STR }}
-  REDIS_HOST: ${{ secrets.REDIS_HOST }}
-  LINE_CHANNEL_TOKEN: ${{ secrets.LINE_CHANNEL_TOKEN }}
-  LINE_NOTIFY_CLIENT_ID: ${{ secrets.LINE_NOTIFY_CLIENT_ID }}
-  LINE_NOTIFY_CLIENT_SECRET: ${{ secrets.LINE_NOTIFY_CLIENT_SECRET }}
-  
 jobs:
-  docker:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: setup
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 10.0.x
     - name: unit-test
       run: |
         dotnet restore
         dotnet build --configuration Release --no-restore
         dotnet test --no-restore --verbosity normal
-    - name: docker-build
-      run: |
-        docker build --build-arg POSTGRE_SQL_CONN_STR="$POSTGRE_SQL_CONN_STR" --build-arg REDIS_HOST="$REDIS_HOST" --build-arg LINE_CHANNEL_TOKEN="$LINE_CHANNEL_TOKEN" --build-arg LINE_NOTIFY_CLIENT_ID="$LINE_NOTIFY_CLIENT_ID" --build-arg LINE_NOTIFY_CLIENT_SECRET="$LINE_NOTIFY_CLIENT_SECRET" -t littleflowerbot . --iidfile imageid.txt
-    - name: heroku-push
-      run: |
-        docker login -u HEROKU_ACCOUNT -p $HEROKU_TOKEN registry.heroku.com
-        docker tag littleflowerbot registry.heroku.com/littleflowerbot/web
-        docker push registry.heroku.com/littleflowerbot/web
-        docker logout registry.heroku.com
-    - name: heroku-release
-      run: |
-        echo "Docker Image ID is $(cat imageid.txt)"
-        imageid=`cat imageid.txt`
-        curl -X PATCH https://api.heroku.com/apps/littleflowerbot/formation --header "Content-Type: application/json" --header "Accept: application/vnd.heroku+json; version=3.docker-releases" --header "Authorization: Bearer $HEROKU_TOKEN" --data '{ "updates": [ { "type": "web", "docker_image": "'$imageid'" } ] }'
-          
