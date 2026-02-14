@@ -18,8 +18,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.10.0" />
-    <PackageReference Include="Testcontainers.Redis" Version="4.10.0" />
+    <PackageReference Include="Testcontainers.MongoDb" Version="4.10.0" />
   </ItemGroup>
 
   <ItemGroup>

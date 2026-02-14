@@ -6,6 +6,7 @@ using LittleFlowerBot.IntegrationTests.Infrastructure;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.GameResult;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using TechTalk.SpecFlow;
 
 namespace LittleFlowerBot.IntegrationTests.StepDefinitions;
@@ -50,10 +51,9 @@ public class GameSteps
     [Then(@"資料庫中應該有 (\d+) 筆井字遊戲結果")]
     public void Then資料庫中應該有N筆井字遊戲結果(int expectedCount)
     {
-        using var scope = _factory.ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
-        var results = dbContext.BoardGameGameResults
-            .Where(r => r.GameType == GameType.TicTacToe)
+        var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
+        var results = context.BoardGameResults
+            .Find(r => r.GameType == GameType.TicTacToe)
             .ToList();
 
         results.Should().HaveCount(expectedCount,
@@ -63,10 +63,9 @@ public class GameSteps
     [Then(@"資料庫中應該有 (\d+) 筆平局結果")]
     public void Then資料庫中應該有N筆平局結果(int expectedCount)
     {
-        using var scope = _factory.ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
-        var results = dbContext.BoardGameGameResults
-            .Where(r => r.GameType == GameType.TicTacToe && r.Result == Models.GameResult.GameResult.Draw)
+        var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
+        var results = context.BoardGameResults
+            .Find(r => r.GameType == GameType.TicTacToe && r.Result == Models.GameResult.GameResult.Draw)
             .ToList();
 
         results.Should().HaveCount(expectedCount,
@@ -82,13 +81,11 @@ public class GameSteps
 
         for (var i = 0; i < maxAttempts; i++)
         {
-            // 檢查是否已經猜對
             if (TestTextRenderer.Messages.Any(msg => msg.Contains("猜對了")))
             {
                 return;
             }
 
-            // 從最新的訊息中解析範圍
             var rangeMessage = TestTextRenderer.Messages
                 .LastOrDefault(msg => msg.StartsWith("猜") && msg.Contains(" - "));
 
@@ -97,14 +94,11 @@ public class GameSteps
                 ParseRange(rangeMessage, out low, out high);
             }
 
-            // 使用二分搜尋法猜測
             var guess = (low + high) / 2;
 
-            // 避免猜到邊界值（邊界值不在範圍內）
             if (guess <= low) guess = low + 1;
             if (guess >= high) guess = high - 1;
 
-            // 如果範圍只剩一個數字
             if (high - low <= 2)
             {
                 guess = low + 1;
@@ -116,14 +110,12 @@ public class GameSteps
             _lastResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        // 如果跑完所有嘗試，檢查是否猜對
         TestTextRenderer.Messages.Should().Contain(msg => msg.Contains("猜對了"),
             $"在 {maxAttempts} 次嘗試後應該已經猜對，最後的訊息：[{string.Join(", ", TestTextRenderer.Messages)}]");
     }
 
     private static void ParseRange(string rangeMessage, out int low, out int high)
     {
-        // 格式: "猜X - Y"
         var parts = rangeMessage.Replace("猜", "").Split(" - ");
         if (parts.Length == 2 &&
             int.TryParse(parts[0].Trim(), out var parsedLow) &&

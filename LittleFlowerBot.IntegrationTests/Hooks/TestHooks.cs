@@ -2,8 +2,9 @@ using BoDi;
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.IntegrationTests.Infrastructure;
 using LittleFlowerBot.Models.Caches;
+using LittleFlowerBot.Models.GameResult;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
+using MongoDB.Driver;
 using TechTalk.SpecFlow;
 
 namespace LittleFlowerBot.IntegrationTests.Hooks;
@@ -25,18 +26,14 @@ public class TestHooks
     [BeforeTestRun]
     public static async Task BeforeTestRun()
     {
-        Console.WriteLine("🐳 正在啟動 Docker 容器...");
+        Console.WriteLine("正在啟動 Docker 容器...");
 
         _factory = new IntegrationTestWebApplicationFactory();
         await _factory.StartContainersAsync();
 
         _httpClient = _factory.CreateClient();
 
-        Console.WriteLine("✅ PostgreSQL 容器已啟動");
-        Console.WriteLine($"   連線字串: {_factory.PostgresConnectionString}");
-        Console.WriteLine("✅ Redis 容器已啟動");
-        Console.WriteLine($"   連線字串: {_factory.RedisConnectionString}");
-        Console.WriteLine("✅ 測試伺服器已啟動");
+        Console.WriteLine("測試伺服器已啟動");
     }
 
     /// <summary>
@@ -58,23 +55,16 @@ public class TestHooks
         // 清除測試訊息記錄
         TestTextRenderer.Clear();
 
-        // 清理遊戲快取（本地記憶體 + Redis），避免場景間遊戲狀態汙染
-        // 先清理本地記憶體快取
+        // 清理遊戲快取
         var gameBoardCache = _factory.ServiceProvider.GetRequiredService<IGameBoardCache>();
         foreach (var gameId in gameBoardCache.GetGameIdList())
         {
             gameBoardCache.Remove(gameId).GetAwaiter().GetResult();
         }
-        // 再清理 Redis（FLUSHDB 確保不留殘餘）
-        var redisConnectionString = $"{_factory.RedisConnectionString},password=test_redis_password,allowAdmin=true";
-        using var redis = ConnectionMultiplexer.Connect(redisConnectionString);
-        redis.GetServer(redis.GetEndPoints()[0]).FlushDatabase();
 
-        // 清理資料庫測試資料，避免場景間資料汙染
-        using var scope = _factory.ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
-        dbContext.BoardGameGameResults.RemoveRange(dbContext.BoardGameGameResults);
-        dbContext.SaveChanges();
+        // 清理 MongoDB 測試資料
+        var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
+        context.BoardGameResults.DeleteMany(Builders<BoardGameResult>.Filter.Empty);
     }
 
     /// <summary>
@@ -84,7 +74,7 @@ public class TestHooks
     [AfterTestRun]
     public static async Task AfterTestRun()
     {
-        Console.WriteLine("🧹 正在清理測試環境...");
+        Console.WriteLine("正在清理測試環境...");
 
         _httpClient?.Dispose();
 
@@ -94,6 +84,6 @@ public class TestHooks
             _factory.Dispose();
         }
 
-        Console.WriteLine("✅ 測試環境已清理完成");
+        Console.WriteLine("測試環境已清理完成");
     }
 }

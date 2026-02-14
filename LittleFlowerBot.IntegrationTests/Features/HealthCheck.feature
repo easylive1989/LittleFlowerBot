@@ -17,7 +17,7 @@ Scenario: 檢查就緒狀態
     When 我發送 GET 請求到 "/health/ready"
     Then 回應狀態碼應該是 200
     And JSON 回應中應該包含 "checks" 欄位
-    And "checks" 欄位應該包含 "PostgreSQL" 檢查項目
+    And "checks" 欄位應該包含 "MongoDB" 檢查項目
 
 Scenario: 檢查存活狀態
     When 我發送 GET 請求到 "/health/live"
@@ -25,15 +25,10 @@ Scenario: 檢查存活狀態
     And JSON 回應中應該包含 "checks" 欄位
     And "checks" 欄位應該包含 "Application" 檢查項目
 
-Scenario: 檢查 PostgreSQL 連線
+Scenario: 檢查 MongoDB 連線
     When 我發送 GET 請求到 "/health"
     Then 回應狀態碼應該是 200
-    And PostgreSQL 健康檢查應該通過
-
-Scenario: 檢查 Redis 連線
-    When 我發送 GET 請求到 "/health"
-    Then 回應狀態碼應該是 200
-    And Redis 健康檢查應該通過
+    And MongoDB 健康檢查應該通過
 
 Scenario: 檢查記憶體使用狀況
     When 我發送 GET 請求到 "/health"

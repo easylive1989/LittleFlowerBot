@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using LittleFlowerBot.Models.Caches;
 using LittleFlowerBot.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LittleFlowerBot.Controllers
 {

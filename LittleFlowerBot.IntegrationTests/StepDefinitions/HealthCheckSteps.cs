@@ -28,9 +28,7 @@ public class HealthCheckSteps
     [Given(@"測試環境已準備就緒")]
     public void Given測試環境已準備就緒()
     {
-        // 驗證 Docker 容器已啟動
-        _factory.PostgresConnectionString.Should().NotBeNullOrEmpty();
-        _factory.RedisConnectionString.Should().NotBeNullOrEmpty();
+        _factory.MongoConnectionString.Should().NotBeNullOrEmpty();
     }
 
     [When(@"我發送 GET 請求到 ""(.*)""")]
@@ -42,7 +40,6 @@ public class HealthCheckSteps
     [Then(@"回應狀態碼應該是 (.*)")]
     public async Task Then回應狀態碼應該是(int statusCode)
     {
-        // 優先使用本地 response，若無則從 ScenarioContext 取得（供跨步驟類別共用）
         var response = _response;
         if (response == null && _scenarioContext.TryGetValue("LastHttpResponse", out HttpResponseMessage? contextResponse))
         {
@@ -51,7 +48,6 @@ public class HealthCheckSteps
 
         response.Should().NotBeNull();
 
-        // 如果狀態碼不符，輸出響應內容以便偵錯
         if (response!.StatusCode != (HttpStatusCode)statusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
@@ -114,8 +110,8 @@ public class HealthCheckSteps
             $"檢查項目應該包含 '{checkName}'");
     }
 
-    [Then(@"PostgreSQL 健康檢查應該通過")]
-    public async Task ThenPostgreSQL健康檢查應該通過()
+    [Then(@"MongoDB 健康檢查應該通過")]
+    public async Task ThenMongoDB健康檢查應該通過()
     {
         if (_jsonResponse == null)
         {
@@ -125,29 +121,10 @@ public class HealthCheckSteps
 
         _jsonResponse.RootElement
             .GetProperty("checks")
-            .TryGetProperty("PostgreSQL", out var postgresCheck)
+            .TryGetProperty("MongoDB", out var mongoCheck)
             .Should().BeTrue();
 
-        postgresCheck.GetProperty("status").GetString().Should().Be("Healthy");
-    }
-
-    [Then(@"Redis 健康檢查應該通過")]
-    public async Task ThenRedis健康檢查應該通過()
-    {
-        if (_jsonResponse == null)
-        {
-            var content = await _response!.Content.ReadAsStringAsync();
-            _jsonResponse = JsonDocument.Parse(content);
-        }
-
-        _jsonResponse.RootElement
-            .GetProperty("checks")
-            .TryGetProperty("Redis", out var redisCheck)
-            .Should().BeTrue();
-
-        // Redis 可能是 Healthy 或 Degraded（如果連線有問題）
-        var status = redisCheck.GetProperty("status").GetString();
-        status.Should().BeOneOf("Healthy", "Degraded");
+        mongoCheck.GetProperty("status").GetString().Should().Be("Healthy");
     }
 
     [Then(@"記憶體健康檢查應該包含使用量資訊")]

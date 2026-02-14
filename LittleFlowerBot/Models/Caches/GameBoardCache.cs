@@ -17,7 +17,7 @@ namespace LittleFlowerBot.Models.Caches
 {
     public class GameBoardCache : IGameBoardCache
     {
-        private readonly IDistributedCache _redisCache;
+        private readonly IDistributedCache _cache;
         private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions();
 
@@ -29,9 +29,9 @@ namespace LittleFlowerBot.Models.Caches
             {typeof(GuessNumberBoard), GameType.GuessNumber},
         };
 
-        public GameBoardCache(IDistributedCache redisCache)
+        public GameBoardCache(IDistributedCache cache)
         {
-            _redisCache = redisCache;
+            _cache = cache;
             _jsonSerializerOptions.Converters.Add(new DictionaryJsonConverter<Ki, Player>());
         }
 
@@ -39,8 +39,8 @@ namespace LittleFlowerBot.Models.Caches
         {
             var gameBoardJson = JsonSerializer.Serialize(gameBoard, _jsonSerializerOptions);
 
-            await _redisCache.SetStringAsync($"{gameId}:type", ((int)_gameTypesMap[gameBoard.GetType()]).ToString());
-            await _redisCache.SetStringAsync($"{gameId}:state", gameBoardJson);
+            await _cache.SetStringAsync($"{gameId}:type", ((int)_gameTypesMap[gameBoard.GetType()]).ToString());
+            await _cache.SetStringAsync($"{gameId}:state", gameBoardJson);
             _gameStateCache[gameId] = gameBoard;
         }
 
@@ -51,8 +51,8 @@ namespace LittleFlowerBot.Models.Caches
                 return _gameStateCache[gameId];
             }
             
-            var gameTypeString = await _redisCache.GetStringAsync($"{gameId}:type");
-            var gameStateString = await _redisCache.GetStringAsync($"{gameId}:state");
+            var gameTypeString = await _cache.GetStringAsync($"{gameId}:type");
+            var gameStateString = await _cache.GetStringAsync($"{gameId}:state");
             if (gameTypeString != null && gameStateString != null)
             {
                 var gameType = Enum.Parse<GameType>(gameTypeString);
@@ -75,7 +75,7 @@ namespace LittleFlowerBot.Models.Caches
         public async Task Remove(string gameId)
         {
             _gameStateCache.Remove(gameId);
-            await _redisCache.RemoveAsync(gameId);
+            await _cache.RemoveAsync(gameId);
         }
 
         public List<string> GetGameIdList()

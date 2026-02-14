@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: little-flower-bot
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://*:10000
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: MONGODB_URI
+        sync: false
+      - key: LineChannelToken
+        sync: false
+    healthCheckPath: /health/live

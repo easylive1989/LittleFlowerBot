@@ -11,44 +11,25 @@ using LittleFlowerBot.Models.HealthCheck;
 using LittleFlowerBot.Models.Message;
 using LittleFlowerBot.Models.Renderer;
 using LittleFlowerBot.Repositories;
-using LittleFlowerBot.Services;
 using LittleFlowerBot.Services.EventHandler;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 取得環境變數
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-var redisUrl = Environment.GetEnvironmentVariable("HEROKU_REDIS_MAUVE_URL");
+// 設定 MongoDB
+var mongoConnectionString = builder.Configuration.GetConnectionString("MongoDB")
+    ?? Environment.GetEnvironmentVariable("MONGODB_URI")
+    ?? "mongodb://localhost:27017";
+var mongoDatabaseName = builder.Configuration.GetValue<string>("MongoDB:DatabaseName") ?? "LittleFlowerBot";
 
-Console.WriteLine($"Database url: {databaseUrl}");
-Console.WriteLine($"Redis url: {redisUrl}");
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoConnectionString));
+builder.Services.AddSingleton(sp =>
+    sp.GetRequiredService<IMongoClient>().GetDatabase(mongoDatabaseName));
+builder.Services.AddSingleton<MongoDbContext>();
 
-// 設定 DbContext
-builder.Services.AddDbContext<LittleFlowerBotContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
-// 設定 Redis 快取
-var redisConnectionString = RedisConfigurationService.GetRedisConnectionStringFromEnvironment();
-
-if (!string.IsNullOrEmpty(redisConnectionString))
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        options.InstanceName = "LittleFlowerBot";
-        options.Configuration = redisConnectionString;
-    });
-    Console.WriteLine("Redis 快取已成功配置");
-}
-else
-{
-    Console.WriteLine("警告: Redis URL 未設定，將使用記憶體快取作為後備方案");
-    // 在開發環境中可以使用記憶體快取作為後備
-    builder.Services.AddDistributedMemoryCache();
-}
+// 設定快取（使用記憶體快取）
+builder.Services.AddDistributedMemoryCache();
 
 // 設定基本服務
 builder.Services.AddMemoryCache();
@@ -104,26 +85,15 @@ var healthChecksBuilder = builder.Services.AddHealthChecks()
         "Memory",
         tags: new[] { "memory", "performance" });
 
-// 在非測試環境中才加入資料庫和 Redis 健康檢查
+// 在非測試環境中才加入資料庫健康檢查
 // 測試環境會在測試工廠中註冊自己的健康檢查
 if (!builder.Environment.IsEnvironment("Testing"))
 {
-    // 資料庫健康檢查
-    healthChecksBuilder.AddNpgSql(
-        builder.Configuration.GetConnectionString("DefaultConnection")!,
-        name: "PostgreSQL",
+    healthChecksBuilder.AddCheck(
+        "MongoDB",
+        new MongoDbHealthCheck(mongoConnectionString),
         failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
-        tags: new[] { "database", "postgresql" });
-
-    // 只在 Redis 配置可用時才加入 Redis 健康檢查
-    if (!string.IsNullOrEmpty(redisConnectionString))
-    {
-        healthChecksBuilder.AddRedis(
-            redisConnectionString,
-            name: "Redis",
-            failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded,
-            tags: new[] { "cache", "redis" });
-    }
+        tags: new[] { "database", "mongodb" });
 }
 
 var app = builder.Build();
@@ -178,13 +148,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
-// 執行資料庫遷移
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
-    context.Database.Migrate();
-}
 
 app.Run();
 

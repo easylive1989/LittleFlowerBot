@@ -151,7 +151,7 @@ this.FeatureBackground();
     testRunner.And("JSON 回應中應該包含 \"checks\" 欄位", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 20
-    testRunner.And("\"checks\" 欄位應該包含 \"PostgreSQL\" 檢查項目", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("\"checks\" 欄位應該包含 \"MongoDB\" 檢查項目", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -194,12 +194,12 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("檢查 PostgreSQL 連線")]
-        public void 檢查PostgreSQL連線()
+        [NUnit.Framework.DescriptionAttribute("檢查 MongoDB 連線")]
+        public void 檢查MongoDB連線()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("檢查 PostgreSQL 連線", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("檢查 MongoDB 連線", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 28
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -220,19 +220,19 @@ this.FeatureBackground();
     testRunner.Then("回應狀態碼應該是 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 31
-    testRunner.And("PostgreSQL 健康檢查應該通過", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("MongoDB 健康檢查應該通過", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("檢查 Redis 連線")]
-        public void 檢查Redis連線()
+        [NUnit.Framework.DescriptionAttribute("檢查記憶體使用狀況")]
+        public void 檢查記憶體使用狀況()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("檢查 Redis 連線", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("檢查記憶體使用狀況", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 33
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -253,39 +253,6 @@ this.FeatureBackground();
     testRunner.Then("回應狀態碼應該是 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 36
-    testRunner.And("Redis 健康檢查應該通過", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("檢查記憶體使用狀況")]
-        public void 檢查記憶體使用狀況()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("檢查記憶體使用狀況", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 38
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 6
-this.FeatureBackground();
-#line hidden
-#line 39
-    testRunner.When("我發送 GET 請求到 \"/health\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 40
-    testRunner.Then("回應狀態碼應該是 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 41
     testRunner.And("記憶體健康檢查應該包含使用量資訊", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

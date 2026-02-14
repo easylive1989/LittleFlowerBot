@@ -1,35 +1,33 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.Models.GameResult;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace LittleFlowerBot.Repositories
 {
     public class BoardGameResultsRepository : IBoardGameResultsRepository
     {
-        private readonly LittleFlowerBotContext _littleFlowerBotContext;
+        private readonly MongoDbContext _context;
 
-        public BoardGameResultsRepository(LittleFlowerBotContext littleFlowerBotContext)
+        public BoardGameResultsRepository(MongoDbContext context)
         {
-            _littleFlowerBotContext = littleFlowerBotContext;
+            _context = context;
         }
 
         public void AddGameResult(BoardGameResult boardGameResult)
         {
-            _littleFlowerBotContext.BoardGameGameResults.Add(boardGameResult);
-            _littleFlowerBotContext.SaveChanges();
+            _context.BoardGameResults.InsertOne(boardGameResult);
         }
 
         public IEnumerable<BoardGameResult> GetAll()
         {
-            return _littleFlowerBotContext.BoardGameGameResults.ToList();
+            return _context.BoardGameResults.Find(_ => true).ToList();
         }
 
         public async Task<IEnumerable<BoardGameResult>> GetResult(string userId)
         {
-            return await _littleFlowerBotContext.BoardGameGameResults.Where(x => x.UserId.Equals(userId)).ToListAsync();
+            return await _context.BoardGameResults
+                .Find(x => x.UserId == userId)
+                .ToListAsync();
         }
     }
 

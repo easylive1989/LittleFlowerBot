@@ -1,15 +1,15 @@
 using LittleFlowerBot.DbContexts;
+using LittleFlowerBot.HealthChecks;
 using LittleFlowerBot.Models.Message;
 using LittleFlowerBot.Models.Renderer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Testcontainers.PostgreSql;
-using Testcontainers.Redis;
+using MongoDB.Driver;
+using Testcontainers.MongoDb;
 
 namespace LittleFlowerBot.IntegrationTests.Infrastructure;
 
@@ -19,86 +19,61 @@ namespace LittleFlowerBot.IntegrationTests.Infrastructure;
 /// </summary>
 public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly PostgreSqlContainer _postgresContainer;
-    private readonly RedisContainer _redisContainer;
+    private readonly MongoDbContainer _mongoContainer;
 
     public IntegrationTestWebApplicationFactory()
     {
-        // 配置 PostgreSQL 容器
-        _postgresContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:15-alpine")
-            .WithDatabase("littleflowerbot_test")
-            .WithUsername("test_user")
-            .WithPassword("test_password")
-            .WithCleanUp(true)
-            .Build();
-
-        // 配置 Redis 容器（設定測試密碼）
-        _redisContainer = new RedisBuilder()
-            .WithImage("redis:7-alpine")
-            .WithCommand("--requirepass", "test_redis_password")
+        _mongoContainer = new MongoDbBuilder("mongo:7")
             .WithCleanUp(true)
             .Build();
     }
 
     /// <summary>
-    /// 取得 PostgreSQL 連線字串
+    /// 取得 MongoDB 連線字串
     /// </summary>
-    public string PostgresConnectionString => _postgresContainer.GetConnectionString();
+    public string MongoConnectionString => _mongoContainer.GetConnectionString();
 
     /// <summary>
-    /// 取得 Redis 連線字串
-    /// </summary>
-    public string RedisConnectionString => _redisContainer.GetConnectionString();
-
-    /// <summary>
-    /// 暴露 DI 容器供測試存取（用於查詢 DB、Cache 等）
+    /// 暴露 DI 容器供測試存取
     /// </summary>
     public IServiceProvider ServiceProvider => Services;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // 使用測試環境
         builder.UseEnvironment("Testing");
 
-        // 配置測試用的連接字符串 - 必須先設置，在服務註冊之前
         builder.ConfigureAppConfiguration((context, config) =>
         {
-            Console.WriteLine($"[測試] 設定測試資料庫連接字符串: {PostgresConnectionString}");
-            Console.WriteLine($"[測試] 設定測試 Redis 連接字符串: {RedisConnectionString}");
+            Console.WriteLine($"[測試] 設定測試 MongoDB 連接字符串: {MongoConnectionString}");
 
-            // 清除現有的配置並設定測試配置
             var testConfig = new Dictionary<string, string?>
             {
-                ["ConnectionStrings:DefaultConnection"] = PostgresConnectionString
+                ["ConnectionStrings:MongoDB"] = MongoConnectionString,
+                ["MongoDB:DatabaseName"] = "LittleFlowerBot_Test"
             };
 
-            // 使用最高優先級添加配置
             config.AddInMemoryCollection(testConfig);
         });
 
         builder.ConfigureTestServices(services =>
         {
-            // 移除原有的 DbContext 配置
-            services.RemoveAll(typeof(DbContextOptions<LittleFlowerBotContext>));
+            // 移除原有的 MongoDB 配置
+            services.RemoveAll<IMongoClient>();
+            services.RemoveAll<IMongoDatabase>();
+            services.RemoveAll<MongoDbContext>();
 
-            // 使用測試資料庫
-            services.AddDbContext<LittleFlowerBotContext>(options =>
-            {
-                options.UseNpgsql(PostgresConnectionString);
-            });
+            // 使用測試 MongoDB
+            services.AddSingleton<IMongoClient>(new MongoClient(MongoConnectionString));
+            services.AddSingleton(sp =>
+                sp.GetRequiredService<IMongoClient>().GetDatabase("LittleFlowerBot_Test"));
+            services.AddSingleton<MongoDbContext>();
 
-            // 註冊測試健康檢查，使用測試連接字符串
-            // 使用與生產環境相同的名稱，因為生產環境的健康檢查在測試環境中不會註冊
+            // 註冊測試健康檢查
             services.AddHealthChecks()
-                .AddNpgSql(
-                    PostgresConnectionString,
-                    name: "PostgreSQL",
-                    tags: new[] { "database", "postgresql" })
-                .AddRedis(
-                    $"{RedisConnectionString},password=test_redis_password",
-                    name: "Redis",
-                    tags: new[] { "cache", "redis" });
+                .AddCheck(
+                    "MongoDB",
+                    new MongoDbHealthCheck(MongoConnectionString),
+                    tags: new[] { "database", "mongodb" });
 
             // 註冊測試用 Renderer 替身
             services.AddSingleton<TestTextRenderer>();
@@ -108,11 +83,6 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
             services.AddScoped<ITextRenderer>(sp => sp.GetRequiredService<TestTextRenderer>());
             services.RemoveAll<IMessage>();
             services.AddScoped<IMessage>(sp => sp.GetRequiredService<TestTextRenderer>());
-            // 確保資料庫已建立並執行遷移
-            var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<LittleFlowerBotContext>();
-            dbContext.Database.Migrate();
         });
     }
 
@@ -121,18 +91,8 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
     /// </summary>
     public async Task StartContainersAsync()
     {
-        await _postgresContainer.StartAsync();
-        await _redisContainer.StartAsync();
-
-        // Testcontainers Redis 返回格式為 "localhost:6379"
-        // 需要轉換為 Heroku 格式 "redis://:password@host:port"
-        var redisHostPort = RedisConnectionString;
-        var redisPassword = "test_redis_password"; // 與 Redis 容器配置的密碼一致
-        var redisUrl = $"redis://:{redisPassword}@{redisHostPort}";
-
-        // 設置環境變數，讓應用程式使用測試資料庫
-        Environment.SetEnvironmentVariable("DATABASE_URL", PostgresConnectionString);
-        Environment.SetEnvironmentVariable("HEROKU_REDIS_MAUVE_URL", redisUrl);
+        await _mongoContainer.StartAsync();
+        Console.WriteLine($"✅ MongoDB 容器已啟動: {MongoConnectionString}");
     }
 
     /// <summary>
@@ -140,8 +100,7 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
     /// </summary>
     public async Task StopContainersAsync()
     {
-        await _postgresContainer.DisposeAsync();
-        await _redisContainer.DisposeAsync();
+        await _mongoContainer.DisposeAsync();
     }
 
     protected override void Dispose(bool disposing)

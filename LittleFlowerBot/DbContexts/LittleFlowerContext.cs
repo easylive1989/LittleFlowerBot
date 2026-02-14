@@ -1,19 +1,18 @@
 using LittleFlowerBot.Models.GameResult;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace LittleFlowerBot.DbContexts
 {
-    public class LittleFlowerBotContext: DbContext
+    public class MongoDbContext
     {
-        public LittleFlowerBotContext(DbContextOptions<LittleFlowerBotContext> options)
-            : base(options)
+        private readonly IMongoDatabase _database;
+
+        public MongoDbContext(IMongoDatabase database)
         {
+            _database = database;
         }
 
-        public DbSet<BoardGameResult> BoardGameGameResults { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
+        public IMongoCollection<BoardGameResult> BoardGameResults =>
+            _database.GetCollection<BoardGameResult>("BoardGameResults");
     }
 }
