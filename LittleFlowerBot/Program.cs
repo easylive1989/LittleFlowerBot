@@ -103,14 +103,6 @@ var app = builder.Build();
 // 使用全域錯誤處理中介軟體（應該在管道的最前面）
 app.UseGlobalExceptionHandler();
 
-// 在開發環境中可以保留開發者例外頁面，但全域處理器會優先處理
-if (app.Environment.IsDevelopment())
-{
-    // app.UseDeveloperExceptionPage(); // 已被全域錯誤處理器取代
-}
-
-app.UseHttpsRedirection();
-
 app.UseRouting();
 
 app.UseAuthorization();
