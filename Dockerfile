@@ -1,14 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# copy csproj and restore as distinct layers
-COPY *.sln .
+# copy csproj and restore
 COPY LittleFlowerBot/*.csproj ./LittleFlowerBot/
-COPY LittleFlowerBotTests/*.csproj ./LittleFlowerBotTests/
-RUN dotnet restore
+RUN dotnet restore LittleFlowerBot/LittleFlowerBot.csproj
 
 # copy everything else and build app
-COPY . ./
+COPY LittleFlowerBot/ ./LittleFlowerBot/
 WORKDIR /app/LittleFlowerBot
 RUN dotnet publish -c Release -o out
 
