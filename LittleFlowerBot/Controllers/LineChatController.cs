@@ -28,7 +28,7 @@ namespace LittleFlowerBot.Controllers
         public async Task<ActionResult> ChatCallback()
         {
             var sw = Stopwatch.StartNew();
-            var body = ReadBody();
+            var body = await ReadBodyAsync();
             _logger.LogWarning("[DEBUG] Webhook received, body length: {Length}, elapsed: {Elapsed}ms", body.Length, sw.ElapsedMilliseconds);
 
             var events = GetEvents(body);
@@ -55,15 +55,10 @@ namespace LittleFlowerBot.Controllers
             return Ok();
         }
 
-        private string ReadBody()
+        private async Task<string> ReadBodyAsync()
         {
-            string body;
-            using (StreamReader reader = new StreamReader(Request.Body, System.Text.Encoding.UTF8))
-            {
-                body = reader.ReadToEndAsync().Result;
-            }
-
-            return body;
+            using var reader = new StreamReader(Request.Body, System.Text.Encoding.UTF8);
+            return await reader.ReadToEndAsync();
         }
 
         private List<Event> GetEvents(string callback)
