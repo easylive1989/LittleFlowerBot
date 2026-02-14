@@ -46,36 +46,33 @@ namespace LittleFlowerBot.Services.EventHandler
         {
             var renderer = _rendererFactory.Get(replyToken);
 
-            var gameBoard = await _gameBoardCache.Get(gameId);
-            if (gameBoard != null)
+            // 如果是建立遊戲指令，移除舊遊戲並建立新遊戲
+            if (IsCreateGameCmd(cmd))
             {
-                var game = _gameFactory.CreateGame(gameBoard);
+                await _gameBoardCache.Remove(gameId);
+                var gameType = _cmdGameTypeDict[cmd];
+                var game = _gameFactory.CreateGame(gameType);
                 game.TextRenderer = renderer;
-                game.Act(userId, cmd);
-                if (game.GameBoard.IsGameOver())
-                {
-                    await _gameBoardCache.Remove(gameId);
-                }
-                else
-                {
-                    await _gameBoardCache.Set(gameId, game.GameBoard);
-                }
-
-                if(cmd == "我認輸了" )
-                {
-                    game.GameOver();
-                    await _gameBoardCache.Remove(gameId);
-                }
+                game.StartGame();
+                await _gameBoardCache.Set(gameId, game.GameBoard);
             }
             else
             {
-                if (IsCreateGameCmd(cmd))
+                var gameBoard = await _gameBoardCache.Get(gameId);
+                if (gameBoard != null)
                 {
-                    var gameType = _cmdGameTypeDict[cmd];
-                    var game = _gameFactory.CreateGame(gameType);
+                    var game = _gameFactory.CreateGame(gameBoard);
                     game.TextRenderer = renderer;
-                    await _gameBoardCache.Set(gameId, game.GameBoard);
-                    game.StartGame();
+                    game.Act(userId, cmd);
+                    if (game.GameBoard.IsGameOver() || cmd == "我認輸了")
+                    {
+                        game.GameOver();
+                        await _gameBoardCache.Remove(gameId);
+                    }
+                    else
+                    {
+                        await _gameBoardCache.Set(gameId, game.GameBoard);
+                    }
                 }
             }
 
