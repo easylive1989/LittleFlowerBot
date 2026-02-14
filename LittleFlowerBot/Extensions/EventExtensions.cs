@@ -15,9 +15,9 @@ namespace LittleFlowerBot.Extensions
             return @event.source.userId;
         }
 
-        public static string Text(this Event @event)
+        public static string? Text(this Event @event)
         {
-            return @event.message.text;
+            return @event.message?.text;
         }
     }
 }
