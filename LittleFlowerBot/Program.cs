@@ -17,9 +17,9 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 設定 MongoDB
-var mongoConnectionString = builder.Configuration.GetConnectionString("MongoDB")
-    ?? Environment.GetEnvironmentVariable("MONGODB_URI")
+// 設定 MongoDB（優先使用環境變數 MONGODB_URI）
+var mongoConnectionString = Environment.GetEnvironmentVariable("MONGODB_URI")
+    ?? builder.Configuration.GetConnectionString("MongoDB")
     ?? "mongodb://localhost:27017";
 var mongoDatabaseName = builder.Configuration.GetValue<string>("MongoDB:DatabaseName") ?? "LittleFlowerBot";
 
