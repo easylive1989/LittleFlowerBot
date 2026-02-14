@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using isRock.LineBot;
 using LittleFlowerBot.Extensions;
@@ -32,6 +33,10 @@ namespace LittleFlowerBot.Controllers
             _logger.LogWarning("[DEBUG] Webhook received, body length: {Length}, elapsed: {Elapsed}ms", body.Length, sw.ElapsedMilliseconds);
 
             var events = GetEvents(body);
+
+            // Extract raw reply tokens from JSON to bypass SDK parsing issues
+            PatchReplyTokensFromRawJson(body, events);
+
             _logger.LogWarning("[DEBUG] Events count: {Count}, types: [{Types}]",
                 events.Count,
                 string.Join(", ", events.Select(e => $"type={e.type}, replyToken={e.replyToken?[..Math.Min(8, e.replyToken?.Length ?? 0)]}...")));
@@ -65,6 +70,39 @@ namespace LittleFlowerBot.Controllers
         {
             var receivedMessage = Utility.Parsing(callback);
             return receivedMessage.events;
+        }
+
+        private void PatchReplyTokensFromRawJson(string body, List<Event> events)
+        {
+            try
+            {
+                var json = JsonDocument.Parse(body);
+                var rawEvents = json.RootElement.GetProperty("events");
+
+                for (int i = 0; i < events.Count && i < rawEvents.GetArrayLength(); i++)
+                {
+                    var rawEvent = rawEvents[i];
+                    if (rawEvent.TryGetProperty("replyToken", out var rawToken))
+                    {
+                        var rawTokenStr = rawToken.GetString();
+                        var sdkToken = events[i].replyToken;
+
+                        if (rawTokenStr != sdkToken)
+                        {
+                            _logger.LogWarning("[DEBUG] Reply token mismatch! SDK={SdkToken}, Raw={RawToken}", sdkToken, rawTokenStr);
+                            events[i].replyToken = rawTokenStr;
+                        }
+                        else
+                        {
+                            _logger.LogWarning("[DEBUG] Reply token match confirmed: {Token}", rawTokenStr);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "[DEBUG] Failed to parse raw JSON for reply token extraction");
+            }
         }
     }
 }
