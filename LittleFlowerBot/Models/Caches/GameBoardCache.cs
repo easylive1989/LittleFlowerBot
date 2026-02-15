@@ -37,7 +37,7 @@ namespace LittleFlowerBot.Models.Caches
 
         public async Task Set(string gameId, IGameBoard gameBoard)
         {
-            var gameBoardJson = JsonSerializer.Serialize(gameBoard, _jsonSerializerOptions);
+            var gameBoardJson = JsonSerializer.Serialize(gameBoard, gameBoard.GetType(), _jsonSerializerOptions);
 
             var document = new GameStateDocument
             {
