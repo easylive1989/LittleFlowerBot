@@ -136,10 +136,25 @@ this.ScenarioInitialize(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 15
-    testRunner.When("使用者 \"userA\" 在群組 \"group2\" 發送訊息 \"玩猜數字\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.Given("猜數字的目標數字為 87", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 16
-    testRunner.Then("可以持續猜數字直到猜對為止", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.When("使用者 \"userA\" 在群組 \"group2\" 發送訊息 \"玩猜數字\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 17
+    testRunner.Then("系統應該回覆包含 \"猜0 - 100\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 18
+    testRunner.When("使用者 \"userA\" 在群組 \"group2\" 發送訊息 \"50\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 19
+    testRunner.Then("系統應該回覆包含 \"猜50 - 100\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 20
+    testRunner.When("使用者 \"userA\" 在群組 \"group2\" 發送訊息 \"87\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 21
+    testRunner.Then("系統應該回覆包含 \"猜對了\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

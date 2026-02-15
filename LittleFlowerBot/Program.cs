@@ -44,6 +44,9 @@ builder.Services.AddScoped<IRendererFactory, RendererFactory>();
 // 註冊 Repository
 builder.Services.AddScoped<IBoardGameResultsRepository, BoardGameResultsRepository>();
 
+// 註冊隨機數產生器
+builder.Services.AddScoped<IRandomGenerator, RandomGenerator>();
+
 // 註冊遊戲服務
 builder.Services.AddScoped<TicTacToeGame>();
 builder.Services.AddScoped<GomokuGame>();

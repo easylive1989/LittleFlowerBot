@@ -74,12 +74,9 @@ namespace LittleFlowerBotTests.Models.Game.GuessNumber
         private void StartGameWith(int target)
         {
             _renderer = Substitute.For<ITextRenderer>();
-            var random = Substitute.For<Random>();
+            var random = Substitute.For<IRandomGenerator>();
             random.Next(0).ReturnsForAnyArgs(target);
-            _guessNumberGame = new GuessNumberGame()
-            {
-                Random = random
-            };
+            _guessNumberGame = new GuessNumberGame(random);
             _guessNumberGame.TextRenderer = _renderer;
             _guessNumberGame.StartGame();
         }

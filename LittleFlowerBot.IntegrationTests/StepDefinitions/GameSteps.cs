@@ -4,6 +4,7 @@ using FluentAssertions;
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.IntegrationTests.Infrastructure;
 using LittleFlowerBot.Models.Game;
+using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Models.GameResult;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -27,6 +28,13 @@ public class GameSteps
         _httpClient = httpClient;
         _factory = factory;
         _scenarioContext = scenarioContext;
+    }
+
+    [Given(@"猜數字的目標數字為 (\d+)")]
+    public void Given猜數字的目標數字為(int target)
+    {
+        var fakeRandom = _factory.ServiceProvider.GetRequiredService<FakeRandomGenerator>();
+        fakeRandom.NextValue = target;
     }
 
     [When(@"使用者 ""(.*)"" 在群組 ""(.*)"" 發送訊息 ""(.*)""")]
@@ -70,65 +78,6 @@ public class GameSteps
 
         results.Should().HaveCount(expectedCount,
             $"預期有 {expectedCount} 筆平局結果");
-    }
-
-    [Then(@"可以持續猜數字直到猜對為止")]
-    public async Task Then可以持續猜數字直到猜對為止()
-    {
-        const int maxAttempts = 100;
-        var low = 0;
-        var high = 100;
-
-        for (var i = 0; i < maxAttempts; i++)
-        {
-            if (TestTextRenderer.Messages.Any(msg => msg.Contains("猜對了")))
-            {
-                return;
-            }
-
-            var rangeMessage = TestTextRenderer.Messages
-                .LastOrDefault(msg => msg.StartsWith("猜") && msg.Contains(" - "));
-
-            if (rangeMessage != null)
-            {
-                ParseRange(rangeMessage, out low, out high);
-            }
-
-            var guess = (low + high) / 2;
-
-            if (guess <= low) guess = low + 1;
-            if (guess >= high) guess = high - 1;
-
-            if (high - low <= 2)
-            {
-                guess = low + 1;
-            }
-
-            var webhookJson = BuildWebhookJson("userA", "group2", guess.ToString());
-            var content = new StringContent(webhookJson, Encoding.UTF8, "application/json");
-            _lastResponse = await _httpClient.PostAsync("/api/LineChat/Callback", content);
-            _lastResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        TestTextRenderer.Messages.Should().Contain(msg => msg.Contains("猜對了"),
-            $"在 {maxAttempts} 次嘗試後應該已經猜對，最後的訊息：[{string.Join(", ", TestTextRenderer.Messages)}]");
-    }
-
-    private static void ParseRange(string rangeMessage, out int low, out int high)
-    {
-        var parts = rangeMessage.Replace("猜", "").Split(" - ");
-        if (parts.Length == 2 &&
-            int.TryParse(parts[0].Trim(), out var parsedLow) &&
-            int.TryParse(parts[1].Trim(), out var parsedHigh))
-        {
-            low = parsedLow;
-            high = parsedHigh;
-        }
-        else
-        {
-            low = 0;
-            high = 100;
-        }
     }
 
     private static string BuildWebhookJson(string userId, string groupId, string text)

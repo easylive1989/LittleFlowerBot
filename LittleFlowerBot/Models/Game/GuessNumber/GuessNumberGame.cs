@@ -5,10 +5,11 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
 {
     public class GuessNumberGame : Game
     {
-        public Random Random = new Random();
+        private readonly IRandomGenerator _random;
 
-        public GuessNumberGame() 
+        public GuessNumberGame(IRandomGenerator random)
         {
+            _random = random;
             GameBoard = new GuessNumberBoard();
         }
         
@@ -68,7 +69,7 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
             GetState()._start = 0;
             GetState()._end = 100;
             GetState()._guessCount = 0;
-            GetState()._target = Random.Next(GetState()._end);
+            GetState()._target = _random.Next(GetState()._end);
             ShowInterval();
         }
 

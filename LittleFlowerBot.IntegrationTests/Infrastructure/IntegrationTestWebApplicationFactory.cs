@@ -1,5 +1,6 @@
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.HealthChecks;
+using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Models.Message;
 using LittleFlowerBot.Models.Renderer;
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +75,11 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
                     "MongoDB",
                     new MongoDbHealthCheck(MongoConnectionString),
                     tags: new[] { "database", "mongodb" });
+
+            // 註冊測試用假隨機數產生器
+            services.RemoveAll<IRandomGenerator>();
+            services.AddSingleton<FakeRandomGenerator>();
+            services.AddScoped<IRandomGenerator>(sp => sp.GetRequiredService<FakeRandomGenerator>());
 
             // 註冊測試用 Renderer 替身
             services.AddSingleton<TestTextRenderer>();
