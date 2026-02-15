@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
@@ -11,14 +12,13 @@ using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
 using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Utils;
-using Microsoft.Extensions.Caching.Distributed;
+using MongoDB.Driver;
 
 namespace LittleFlowerBot.Models.Caches
 {
     public class GameBoardCache : IGameBoardCache
     {
-        private readonly IDistributedCache _cache;
-        private readonly Dictionary<string, IGameBoard> _gameStateCache = new Dictionary<string, IGameBoard>();
+        private readonly MongoDbContext _context;
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions();
 
         private Dictionary<Type, GameType> _gameTypesMap = new Dictionary<Type, GameType>()
@@ -29,9 +29,9 @@ namespace LittleFlowerBot.Models.Caches
             {typeof(GuessNumberBoard), GameType.GuessNumber},
         };
 
-        public GameBoardCache(IDistributedCache cache)
+        public GameBoardCache(MongoDbContext context)
         {
-            _cache = cache;
+            _context = context;
             _jsonSerializerOptions.Converters.Add(new DictionaryJsonConverter<Ki, Player>());
         }
 
@@ -39,33 +39,38 @@ namespace LittleFlowerBot.Models.Caches
         {
             var gameBoardJson = JsonSerializer.Serialize(gameBoard, _jsonSerializerOptions);
 
-            await _cache.SetStringAsync($"{gameId}:type", ((int)_gameTypesMap[gameBoard.GetType()]).ToString());
-            await _cache.SetStringAsync($"{gameId}:state", gameBoardJson);
-            _gameStateCache[gameId] = gameBoard;
+            var document = new GameStateDocument
+            {
+                Id = gameId,
+                GameType = (int)_gameTypesMap[gameBoard.GetType()],
+                State = gameBoardJson
+            };
+
+            await _context.GameStates.ReplaceOneAsync(
+                Builders<GameStateDocument>.Filter.Eq(d => d.Id, gameId),
+                document,
+                new ReplaceOptions { IsUpsert = true });
         }
 
         public async Task<IGameBoard> Get(string gameId)
         {
-            if (_gameStateCache.ContainsKey(gameId))
+            var filter = Builders<GameStateDocument>.Filter.Eq(d => d.Id, gameId);
+            using var cursor = await _context.GameStates.FindAsync(filter);
+            var document = await cursor.FirstOrDefaultAsync();
+
+            if (document != null)
             {
-                return _gameStateCache[gameId];
-            }
-            
-            var gameTypeString = await _cache.GetStringAsync($"{gameId}:type");
-            var gameStateString = await _cache.GetStringAsync($"{gameId}:state");
-            if (gameTypeString != null && gameStateString != null)
-            {
-                var gameType = Enum.Parse<GameType>(gameTypeString);
+                var gameType = (GameType)document.GameType;
                 switch (gameType)
                 {
                     case GameType.GuessNumber:
-                        return JsonSerializer.Deserialize<GuessNumberBoard>(gameStateString, _jsonSerializerOptions);
+                        return JsonSerializer.Deserialize<GuessNumberBoard>(document.State, _jsonSerializerOptions);
                     case GameType.TicTacToe:
-                        return JsonSerializer.Deserialize<TicTacToeBoard>(gameStateString, _jsonSerializerOptions);
+                        return JsonSerializer.Deserialize<TicTacToeBoard>(document.State, _jsonSerializerOptions);
                     case GameType.Gomoku:
-                        return JsonSerializer.Deserialize<GomokuBoard>(gameStateString, _jsonSerializerOptions);
+                        return JsonSerializer.Deserialize<GomokuBoard>(document.State, _jsonSerializerOptions);
                     case GameType.ChineseChess:
-                        return JsonSerializer.Deserialize<ChineseChessBoard>(gameStateString, _jsonSerializerOptions);
+                        return JsonSerializer.Deserialize<ChineseChessBoard>(document.State, _jsonSerializerOptions);
                 }
             }
 
@@ -74,13 +79,15 @@ namespace LittleFlowerBot.Models.Caches
 
         public async Task Remove(string gameId)
         {
-            _gameStateCache.Remove(gameId);
-            await _cache.RemoveAsync(gameId);
+            await _context.GameStates.DeleteOneAsync(
+                Builders<GameStateDocument>.Filter.Eq(d => d.Id, gameId));
         }
 
         public List<string> GetGameIdList()
         {
-            return _gameStateCache.Keys.ToList();
+            var filter = Builders<GameStateDocument>.Filter.Empty;
+            using var cursor = _context.GameStates.FindSync(filter);
+            return cursor.ToList().Select(d => d.Id).ToList();
         }
     }
 }

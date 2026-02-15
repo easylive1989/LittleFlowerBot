@@ -55,15 +55,9 @@ public class TestHooks
         // 清除測試訊息記錄
         TestTextRenderer.Clear();
 
-        // 清理遊戲快取
-        var gameBoardCache = _factory.ServiceProvider.GetRequiredService<IGameBoardCache>();
-        foreach (var gameId in gameBoardCache.GetGameIdList())
-        {
-            gameBoardCache.Remove(gameId).GetAwaiter().GetResult();
-        }
-
         // 清理 MongoDB 測試資料
         var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
+        context.GameStates.DeleteMany(Builders<GameStateDocument>.Filter.Empty);
         context.BoardGameResults.DeleteMany(Builders<BoardGameResult>.Filter.Empty);
     }
 

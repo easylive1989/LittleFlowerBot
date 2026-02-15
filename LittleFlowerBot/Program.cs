@@ -28,9 +28,6 @@ builder.Services.AddSingleton(sp =>
     sp.GetRequiredService<IMongoClient>().GetDatabase(mongoDatabaseName));
 builder.Services.AddSingleton<MongoDbContext>();
 
-// 設定快取（使用記憶體快取）
-builder.Services.AddDistributedMemoryCache();
-
 // 設定基本服務
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
@@ -38,7 +35,7 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
 // 註冊快取服務
-builder.Services.AddSingleton<IGameBoardCache, GameBoardCache>();
+builder.Services.AddScoped<IGameBoardCache, GameBoardCache>();
 
 // 註冊工廠服務
 builder.Services.AddScoped<IGameFactory, GameFactory>();
