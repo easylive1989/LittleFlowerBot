@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -16,17 +18,37 @@ namespace LittleFlowerBot.Models.Message
             _httpClientFactory = httpClientFactory;
         }
 
-        public void Reply(string replyToken, string text)
+        public void Reply(string replyToken, string text, List<QuickReplyItem>? quickReplyItems = null)
         {
             var httpClient = _httpClientFactory.CreateClient();
+
+            var message = new Dictionary<string, object>
+            {
+                { "type", "text" },
+                { "text", text }
+            };
+
+            if (quickReplyItems != null && quickReplyItems.Count > 0)
+            {
+                message["quickReply"] = new
+                {
+                    items = quickReplyItems.Select(item => new
+                    {
+                        type = "action",
+                        action = new
+                        {
+                            type = "message",
+                            label = item.Label,
+                            text = item.Text
+                        }
+                    }).ToArray()
+                };
+            }
 
             var requestBody = new
             {
                 replyToken,
-                messages = new[]
-                {
-                    new { type = "text", text }
-                }
+                messages = new[] { message }
             };
 
             var json = JsonSerializer.Serialize(requestBody);

@@ -13,7 +13,7 @@ public class TestTextRenderer : ITextRenderer, IMessage
 
     public void Render(string text) => _messages.Add(text);
 
-    public void Reply(string replyToken, string text) => _messages.Add(text);
+    public void Reply(string replyToken, string text, List<QuickReplyItem>? quickReplyItems = null) => _messages.Add(text);
 
     /// <summary>
     /// 取得所有已記錄的訊息

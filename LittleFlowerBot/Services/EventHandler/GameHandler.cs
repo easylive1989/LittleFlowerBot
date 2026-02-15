@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using isRock.LineBot;
 using LittleFlowerBot.Extensions;
 using LittleFlowerBot.Models.Caches;
+using LittleFlowerBot.Models.Message;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
@@ -51,6 +52,7 @@ namespace LittleFlowerBot.Services.EventHandler
                 renderer.Render(string.Join("\n", new[]
                 {
                     "【小遊戲指令說明】",
+                    "玩遊戲 - 選擇遊戲開始玩",
                     "玩猜數字 - 開始猜數字遊戲",
                     "玩井字遊戲 - 開始井字遊戲",
                     "玩五子棋 - 開始五子棋遊戲",
@@ -59,6 +61,24 @@ namespace LittleFlowerBot.Services.EventHandler
                     "我的戰績 - 查看遊戲戰績",
                 }));
                 (renderer as BufferedReplyRenderer)?.Flush();
+                return;
+            }
+
+            if (cmd == "玩遊戲")
+            {
+                renderer.Render("請選擇遊戲：");
+                var bufferedRenderer = renderer as BufferedReplyRenderer;
+                if (bufferedRenderer != null)
+                {
+                    bufferedRenderer.QuickReplyItems = new List<QuickReplyItem>
+                    {
+                        new QuickReplyItem("猜數字", "玩猜數字"),
+                        new QuickReplyItem("井字遊戲", "玩井字遊戲"),
+                        new QuickReplyItem("五子棋", "玩五子棋"),
+                        new QuickReplyItem("象棋", "玩象棋"),
+                    };
+                }
+                bufferedRenderer?.Flush();
                 return;
             }
 

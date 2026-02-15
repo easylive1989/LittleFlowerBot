@@ -9,6 +9,7 @@ namespace LittleFlowerBot.Models.Renderer
         private readonly List<string> _buffer = new();
 
         public string? ReplyToken { get; set; }
+        public List<QuickReplyItem>? QuickReplyItems { get; set; }
 
         public BufferedReplyRenderer(IMessage message)
         {
@@ -28,8 +29,9 @@ namespace LittleFlowerBot.Models.Renderer
             }
 
             var joinedText = string.Join("\n", _buffer);
-            _message.Reply(ReplyToken, joinedText);
+            _message.Reply(ReplyToken, joinedText, QuickReplyItems);
             _buffer.Clear();
+            QuickReplyItems = null;
         }
     }
 }
