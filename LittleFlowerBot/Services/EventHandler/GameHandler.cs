@@ -102,7 +102,10 @@ namespace LittleFlowerBot.Services.EventHandler
                     game.Act(userId, cmd);
                     if (game.GameBoard.IsGameOver() || cmd == "我認輸了")
                     {
-                        game.GameOver();
+                        if (!game.GameBoard.IsGameOver())
+                        {
+                            game.GameOver();
+                        }
                         await _gameBoardCache.Remove(gameId);
                     }
                     else
