@@ -46,6 +46,22 @@ namespace LittleFlowerBot.Services.EventHandler
         {
             var renderer = _rendererFactory.Get(replyToken);
 
+            if (cmd == "小遊戲說明")
+            {
+                renderer.Render(string.Join("\n", new[]
+                {
+                    "【小遊戲指令說明】",
+                    "玩猜數字 - 開始猜數字遊戲",
+                    "玩井字遊戲 - 開始井字遊戲",
+                    "玩五子棋 - 開始五子棋遊戲",
+                    "玩象棋 - 開始象棋遊戲",
+                    "我認輸了 - 放棄目前的遊戲",
+                    "我的戰績 - 查看遊戲戰績",
+                }));
+                (renderer as BufferedReplyRenderer)?.Flush();
+                return;
+            }
+
             // 如果是建立遊戲指令，移除舊遊戲並建立新遊戲
             if (IsCreateGameCmd(cmd))
             {
