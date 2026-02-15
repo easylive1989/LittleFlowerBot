@@ -5,11 +5,11 @@ namespace LittleFlowerBot.Models.Game.GuessNumber
     [Serializable]
     public class GuessNumberBoard : IGameBoard
     {
-        public int _start;
-        public int _end;
-        public int _target;
-        public int _guessCount;
-        public bool _isGameOver;
+        public int _start { get; set; }
+        public int _end { get; set; }
+        public int _target { get; set; }
+        public int _guessCount { get; set; }
+        public bool _isGameOver { get; set; }
         
         public bool IsGameOver()
         {
