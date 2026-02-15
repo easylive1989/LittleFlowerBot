@@ -20,7 +20,7 @@ namespace LittleFlowerBot.Utils
                 return false;
             }
 
-            return typeToConvert.GetGenericArguments()[0].IsEnum;
+            return typeToConvert.GetGenericArguments()[0] == typeof(TKey);
         }
 
         public override IDictionary<TKey, TValue> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

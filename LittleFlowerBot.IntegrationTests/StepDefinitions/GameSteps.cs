@@ -68,6 +68,18 @@ public class GameSteps
             $"預期有 {expectedCount} 筆井字遊戲結果");
     }
 
+    [Then(@"資料庫中應該有 (\d+) 筆五子棋遊戲結果")]
+    public void Then資料庫中應該有N筆五子棋遊戲結果(int expectedCount)
+    {
+        var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
+        var results = context.BoardGameResults
+            .Find(r => r.GameType == GameType.Gomoku)
+            .ToList();
+
+        results.Should().HaveCount(expectedCount,
+            $"預期有 {expectedCount} 筆五子棋遊戲結果");
+    }
+
     [Then(@"資料庫中應該有 (\d+) 筆平局結果")]
     public void Then資料庫中應該有N筆平局結果(int expectedCount)
     {

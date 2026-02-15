@@ -7,6 +7,7 @@ using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
+using ChineseChessType = LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
@@ -33,6 +34,7 @@ namespace LittleFlowerBot.Models.Caches
         {
             _context = context;
             _jsonSerializerOptions.Converters.Add(new DictionaryJsonConverter<Ki, Player>());
+            _jsonSerializerOptions.Converters.Add(new DictionaryJsonConverter<ChineseChessType, Player>());
         }
 
         public async Task Set(string gameId, IGameBoard gameBoard)
