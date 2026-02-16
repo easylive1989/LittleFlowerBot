@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="LineBotSDK" Version="2.0.11" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.116.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services" />

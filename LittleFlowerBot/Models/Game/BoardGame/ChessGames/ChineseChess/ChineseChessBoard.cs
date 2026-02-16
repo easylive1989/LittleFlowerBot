@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using LittleFlowerBot.Extensions;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess.StepRule;
 using LittleFlowerBot.Models.GameExceptions;
+using SkiaSharp;
 
 namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
 {
@@ -181,11 +183,11 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
                         if (i == 4)
                         {
                             builder.Append("┴");
-                        } 
+                        }
                         else if (i == 5)
                         {
                             builder.Append("┬");
-                        } 
+                        }
                         else
                         {
                             builder.Append("┼");
@@ -195,6 +197,140 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
                 builder.Append("\n");
             }
             return builder.ToString();
+        }
+
+        public override byte[] GetBoardImage()
+        {
+            const int cellSize = 60;
+            const int marginLeft = 45;
+            const int marginTop = 40;
+            const int pieceRadius = 25;
+
+            int boardWidth = (Column - 1) * cellSize;
+            int boardHeight = (Row - 1) * cellSize;
+            int width = marginLeft + boardWidth + 30;
+            int height = marginTop + boardHeight + 30;
+
+            var info = new SKImageInfo(width, height);
+            using var surface = SKSurface.Create(info);
+            var canvas = surface.Canvas;
+
+            // Background
+            canvas.Clear(new SKColor(0xF0, 0xD0, 0x90));
+
+            var typeface = SKTypeface.FromFamilyName("Noto Sans CJK TC")
+                           ?? SKTypeface.FromFamilyName("WenQuanYi Micro Hei")
+                           ?? SKTypeface.Default;
+
+            using var gridPaint = new SKPaint
+            {
+                Color = new SKColor(0x40, 0x20, 0x00),
+                StrokeWidth = 2f,
+                IsAntialias = true,
+                Style = SKPaintStyle.Stroke
+            };
+
+            // Draw horizontal lines
+            for (int i = 0; i < Row; i++)
+            {
+                float y = marginTop + i * cellSize;
+                canvas.DrawLine(marginLeft, y, marginLeft + boardWidth, y, gridPaint);
+            }
+
+            // Draw vertical lines (top half, rows 0-4)
+            for (int j = 0; j < Column; j++)
+            {
+                float x = marginLeft + j * cellSize;
+                canvas.DrawLine(x, marginTop, x, marginTop + 4 * cellSize, gridPaint);
+            }
+
+            // Draw vertical lines (bottom half, rows 5-9)
+            for (int j = 0; j < Column; j++)
+            {
+                float x = marginLeft + j * cellSize;
+                canvas.DrawLine(x, marginTop + 5 * cellSize, x, marginTop + 9 * cellSize, gridPaint);
+            }
+
+            // River: only left and right border verticals connect rows 4-5
+            canvas.DrawLine(marginLeft, marginTop + 4 * cellSize, marginLeft, marginTop + 5 * cellSize, gridPaint);
+            canvas.DrawLine(marginLeft + 8 * cellSize, marginTop + 4 * cellSize, marginLeft + 8 * cellSize, marginTop + 5 * cellSize, gridPaint);
+
+            // Palace diagonals (top: rows 0-2, cols 3-5)
+            float palaceLeft = marginLeft + 3 * cellSize;
+            float palaceRight = marginLeft + 5 * cellSize;
+            canvas.DrawLine(palaceLeft, marginTop, palaceRight, marginTop + 2 * cellSize, gridPaint);
+            canvas.DrawLine(palaceRight, marginTop, palaceLeft, marginTop + 2 * cellSize, gridPaint);
+
+            // Palace diagonals (bottom: rows 7-9, cols 3-5)
+            canvas.DrawLine(palaceLeft, marginTop + 7 * cellSize, palaceRight, marginTop + 9 * cellSize, gridPaint);
+            canvas.DrawLine(palaceRight, marginTop + 7 * cellSize, palaceLeft, marginTop + 9 * cellSize, gridPaint);
+
+            // River text
+            using var riverFont = new SKFont(typeface, 24);
+            using var riverPaint = new SKPaint { Color = new SKColor(0x40, 0x20, 0x00), IsAntialias = true };
+            float riverY = marginTop + 4.5f * cellSize + 8;
+            DrawCenteredText(canvas, "楚 河", marginLeft + 2 * cellSize, riverY, riverFont, riverPaint);
+            DrawCenteredText(canvas, "漢 界", marginLeft + 6 * cellSize, riverY, riverFont, riverPaint);
+
+            // Draw column labels (A-I)
+            using var labelFont = new SKFont(typeface, 16);
+            using var labelPaint = new SKPaint { Color = new SKColor(0x40, 0x20, 0x00), IsAntialias = true };
+            string[] colLabels = { "A", "B", "C", "D", "E", "F", "G", "H", "I" };
+            for (int j = 0; j < Column; j++)
+            {
+                float x = marginLeft + j * cellSize;
+                DrawCenteredText(canvas, colLabels[j], x, marginTop - 15, labelFont, labelPaint);
+            }
+
+            // Draw row labels (1-10)
+            for (int i = 0; i < Row; i++)
+            {
+                float y = marginTop + i * cellSize + 5;
+                DrawCenteredText(canvas, $"{i + 1}", marginLeft - 25, y, labelFont, labelPaint);
+            }
+
+            // Draw pieces
+            var displayDict = GetDisplayDict();
+            using var pieceFillRed = new SKPaint { Color = new SKColor(0xFF, 0xF0, 0xE0), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var pieceFillBlack = new SKPaint { Color = new SKColor(0xFF, 0xF0, 0xE0), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var pieceStrokeRed = new SKPaint { Color = new SKColor(0xCC, 0x00, 0x00), Style = SKPaintStyle.Stroke, StrokeWidth = 2.5f, IsAntialias = true };
+            using var pieceStrokeBlack = new SKPaint { Color = new SKColor(0x00, 0x00, 0x00), Style = SKPaintStyle.Stroke, StrokeWidth = 2.5f, IsAntialias = true };
+            using var pieceTextFont = new SKFont(typeface, 26);
+            using var pieceTextRed = new SKPaint { Color = new SKColor(0xCC, 0x00, 0x00), IsAntialias = true };
+            using var pieceTextBlack = new SKPaint { Color = new SKColor(0x00, 0x00, 0x00), IsAntialias = true };
+
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Column; j++)
+                {
+                    var chess = GameBoardArray[i][j];
+                    if (chess == ChineseChess.Empty || !displayDict.ContainsKey(chess))
+                        continue;
+
+                    float cx = marginLeft + j * cellSize;
+                    float cy = marginTop + i * cellSize;
+                    bool isRed = ChineseChessExtensions.RedChessGroup.Contains(chess);
+
+                    // Draw piece background circle
+                    canvas.DrawCircle(cx, cy, pieceRadius, isRed ? pieceFillRed : pieceFillBlack);
+                    canvas.DrawCircle(cx, cy, pieceRadius, isRed ? pieceStrokeRed : pieceStrokeBlack);
+                    canvas.DrawCircle(cx, cy, pieceRadius - 3, isRed ? pieceStrokeRed : pieceStrokeBlack);
+
+                    // Draw piece character
+                    DrawCenteredText(canvas, displayDict[chess], cx, cy + 9, pieceTextFont, isRed ? pieceTextRed : pieceTextBlack);
+                }
+            }
+
+            // Encode to PNG
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            return data.ToArray();
+        }
+
+        private static void DrawCenteredText(SKCanvas canvas, string text, float x, float y, SKFont font, SKPaint paint)
+        {
+            float textWidth = font.MeasureText(text, paint);
+            canvas.DrawText(text, x - textWidth / 2, y, font, paint);
         }
         
         private bool Contains(ChineseChess chess)

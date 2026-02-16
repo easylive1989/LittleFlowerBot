@@ -24,15 +24,15 @@ namespace LittleFlowerBot.Models.Game.BoardGame
                 if (GetBoard().IsPlayerFully())
                 {
                     Render("遊戲開始");
-                    
-                    Render(GetBoard().GetBoardString());
+
+                    RenderImage(GetBoard().GetBoardImage());
                 }
             }
             else if(IsCmdValid(cmd) && GetBoard().IsPlayerFully())
             {
                 Move(cmd, player);
-                
-                Render(GetBoard().GetBoardString());
+
+                RenderImage(GetBoard().GetBoardImage());
 
                 if (GetBoard().IsGameOver())
                 {

@@ -17,6 +17,11 @@ namespace LittleFlowerBot.Models.Game
             TextRenderer.Render(text);
         }
 
+        protected void RenderImage(byte[] imageData)
+        {
+            TextRenderer.RenderImage(imageData);
+        }
+
         public virtual void GameOver()
         {
             Render("遊戲結束!");

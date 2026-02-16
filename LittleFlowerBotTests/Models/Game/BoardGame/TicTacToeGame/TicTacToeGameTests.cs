@@ -52,7 +52,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
             InputCmd("userB", "++");
             InputCmd("userA", "2,b");
 
-            MessageShouldBe("00ⒶⒷⒸ\n01＿＿＿\n02＿●＿\n03＿＿＿\n");
+            ImageShouldBeRendered(2);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
             InputCmd("userA", "2,b");
             InputCmd("userB", "1,a");
 
-            MessageShouldBe("00ⒶⒷⒸ\n01○＿＿\n02＿●＿\n03＿＿＿\n");
+            ImageShouldBeRendered(3);
         }
 
         [Test]
@@ -153,6 +153,11 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
         private void MessageShouldBe(string message)
         {
             _renderer.Received(1).Render(message);
+        }
+
+        private void ImageShouldBeRendered(int times)
+        {
+            _renderer.Received(times).RenderImage(Arg.Any<byte[]>());
         }
 
         private void StartGame()

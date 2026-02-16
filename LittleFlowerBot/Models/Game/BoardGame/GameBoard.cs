@@ -36,6 +36,8 @@ namespace LittleFlowerBot.Models.Game.BoardGame
 
         public abstract string GetBoardString();
 
+        public abstract byte[] GetBoardImage();
+
         public abstract bool IsDraw();
 
         public bool IsPlayerFully()
