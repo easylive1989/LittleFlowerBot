@@ -1,24 +1,38 @@
 using System.Collections.Generic;
+using System.Linq;
+using LittleFlowerBot.Models.BoardImage;
 using LittleFlowerBot.Models.Message;
+using Microsoft.Extensions.Configuration;
 
 namespace LittleFlowerBot.Models.Renderer
 {
     public class BufferedReplyRenderer : ITextRenderer
     {
         private readonly IMessage _message;
-        private readonly List<string> _buffer = new();
+        private readonly IBoardImageStore _imageStore;
+        private readonly string _baseUrl;
+        private readonly List<ReplyMessageItem> _buffer = new();
 
         public string? ReplyToken { get; set; }
         public List<QuickReplyItem>? QuickReplyItems { get; set; }
 
-        public BufferedReplyRenderer(IMessage message)
+        public BufferedReplyRenderer(IMessage message, IBoardImageStore imageStore, IConfiguration configuration)
         {
             _message = message;
+            _imageStore = imageStore;
+            _baseUrl = (configuration.GetValue<string>("BaseUrl") ?? "").TrimEnd('/');
         }
 
         public void Render(string text)
         {
-            _buffer.Add(text);
+            _buffer.Add(new TextReplyMessage(text));
+        }
+
+        public void RenderImage(byte[] imageData)
+        {
+            var imageId = _imageStore.Save(imageData);
+            var imageUrl = $"{_baseUrl}/api/board-images/{imageId}";
+            _buffer.Add(new ImageReplyMessage(imageUrl));
         }
 
         public void Flush()
@@ -28,10 +42,40 @@ namespace LittleFlowerBot.Models.Renderer
                 return;
             }
 
-            var joinedText = string.Join("\n", _buffer);
-            _message.Reply(ReplyToken, joinedText, QuickReplyItems);
+            var messages = MergeConsecutiveTextMessages(_buffer);
+            _message.ReplyMessages(ReplyToken, messages, QuickReplyItems);
             _buffer.Clear();
             QuickReplyItems = null;
+        }
+
+        private static List<ReplyMessageItem> MergeConsecutiveTextMessages(List<ReplyMessageItem> items)
+        {
+            var result = new List<ReplyMessageItem>();
+            var textParts = new List<string>();
+
+            foreach (var item in items)
+            {
+                if (item is TextReplyMessage textMsg)
+                {
+                    textParts.Add(textMsg.Text);
+                }
+                else
+                {
+                    if (textParts.Count > 0)
+                    {
+                        result.Add(new TextReplyMessage(string.Join("\n", textParts)));
+                        textParts.Clear();
+                    }
+                    result.Add(item);
+                }
+            }
+
+            if (textParts.Count > 0)
+            {
+                result.Add(new TextReplyMessage(string.Join("\n", textParts)));
+            }
+
+            return result;
         }
     }
 }

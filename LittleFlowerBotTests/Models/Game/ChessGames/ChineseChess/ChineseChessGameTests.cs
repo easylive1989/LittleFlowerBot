@@ -44,21 +44,10 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         public void Act_MoveSoldierUp_ShouldShowGameBoard()
         {
             GivenTwoPlayerJoin();
-            
+
             _chineseChessGame.Act(PlayerA, "4,a>5,a");
-            
-            MessageShouldBe(
-                "00ⒶⒷⒸⒹⒺⒻⒼⒽⒾ\n" +
-                "01車馬象士將士象馬車\n" +
-                "02┼┼┼┼┼┼┼┼┼\n" +
-                "03┼包┼┼┼┼┼包┼\n" +
-                "04┼┼卒┼卒┼卒┼卒\n" +
-                "05卒┴┴┴┴┴┴┴┴\n" +
-                "06┬┬┬┬┬┬┬┬┬\n" +
-                "07兵┼兵┼兵┼兵┼兵\n" +
-                "08┼炮┼┼┼┼┼炮┼\n" +
-                "09┼┼┼┼┼┼┼┼┼\n" +
-                "10俥傌相仕帥仕相傌俥\n");
+
+            ImageShouldBeRendered(2);
         }
         
         [Test]
@@ -95,23 +84,12 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         public void Act_MoveChessToChess_ShouldAteChess()
         {
             GivenTwoPlayerJoin();
-            
+
             _chineseChessGame.Act(PlayerA, "4,a>5,a");
             _chineseChessGame.Act(PlayerB, "7,a>6,a");
             _chineseChessGame.Act(PlayerA, "5,a>6,a");
-            
-            MessageShouldBe(
-                "00ⒶⒷⒸⒹⒺⒻⒼⒽⒾ\n" +
-                "01車馬象士將士象馬車\n" +
-                "02┼┼┼┼┼┼┼┼┼\n" +
-                "03┼包┼┼┼┼┼包┼\n" +
-                "04┼┼卒┼卒┼卒┼卒\n" +
-                "05┴┴┴┴┴┴┴┴┴\n" +
-                "06卒┬┬┬┬┬┬┬┬\n" +
-                "07┼┼兵┼兵┼兵┼兵\n" +
-                "08┼炮┼┼┼┼┼炮┼\n" +
-                "09┼┼┼┼┼┼┼┼┼\n" +
-                "10俥傌相仕帥仕相傌俥\n");
+
+            ImageShouldBeRendered(4);
         }
         
         [Test]
@@ -142,6 +120,11 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         private void MessageShouldBe(string message)
         {
             _textRenderer.Received(1).Render(message);
+        }
+
+        private void ImageShouldBeRendered(int times)
+        {
+            _textRenderer.Received(times).RenderImage(Arg.Any<byte[]>());
         }
         
         private void GivenTwoPlayerJoin()

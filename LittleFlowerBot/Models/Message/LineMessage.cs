@@ -20,17 +20,41 @@ namespace LittleFlowerBot.Models.Message
 
         public void Reply(string replyToken, string text, List<QuickReplyItem>? quickReplyItems = null)
         {
+            var messages = new List<ReplyMessageItem> { new TextReplyMessage(text) };
+            ReplyMessages(replyToken, messages, quickReplyItems);
+        }
+
+        public void ReplyMessages(string replyToken, List<ReplyMessageItem> messages, List<QuickReplyItem>? quickReplyItems = null)
+        {
             var httpClient = _httpClientFactory.CreateClient();
 
-            var message = new Dictionary<string, object>
-            {
-                { "type", "text" },
-                { "text", text }
-            };
+            var lineMessages = new List<Dictionary<string, object>>();
 
-            if (quickReplyItems != null && quickReplyItems.Count > 0)
+            foreach (var msg in messages)
             {
-                message["quickReply"] = new
+                switch (msg)
+                {
+                    case TextReplyMessage textMsg:
+                        lineMessages.Add(new Dictionary<string, object>
+                        {
+                            { "type", "text" },
+                            { "text", textMsg.Text }
+                        });
+                        break;
+                    case ImageReplyMessage imageMsg:
+                        lineMessages.Add(new Dictionary<string, object>
+                        {
+                            { "type", "image" },
+                            { "originalContentUrl", imageMsg.ImageUrl },
+                            { "previewImageUrl", imageMsg.ImageUrl }
+                        });
+                        break;
+                }
+            }
+
+            if (quickReplyItems != null && quickReplyItems.Count > 0 && lineMessages.Count > 0)
+            {
+                lineMessages[^1]["quickReply"] = new
                 {
                     items = quickReplyItems.Select(item => new
                     {
@@ -48,7 +72,7 @@ namespace LittleFlowerBot.Models.Message
             var requestBody = new
             {
                 replyToken,
-                messages = new[] { message }
+                messages = lineMessages
             };
 
             var json = JsonSerializer.Serialize(requestBody);
