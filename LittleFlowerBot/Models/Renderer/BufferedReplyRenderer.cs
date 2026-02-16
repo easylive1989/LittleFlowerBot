@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using LittleFlowerBot.Models.BoardImage;
 using LittleFlowerBot.Models.Message;
 using Microsoft.Extensions.Configuration;
@@ -9,17 +8,15 @@ namespace LittleFlowerBot.Models.Renderer
     public class BufferedReplyRenderer : ITextRenderer
     {
         private readonly IMessage _message;
-        private readonly IBoardImageStore _imageStore;
         private readonly string _baseUrl;
         private readonly List<ReplyMessageItem> _buffer = new();
 
         public string? ReplyToken { get; set; }
         public List<QuickReplyItem>? QuickReplyItems { get; set; }
 
-        public BufferedReplyRenderer(IMessage message, IBoardImageStore imageStore, IConfiguration configuration)
+        public BufferedReplyRenderer(IMessage message, IConfiguration configuration)
         {
             _message = message;
-            _imageStore = imageStore;
             _baseUrl = (configuration.GetValue<string>("BaseUrl") ?? "").TrimEnd('/');
         }
 
@@ -28,10 +25,10 @@ namespace LittleFlowerBot.Models.Renderer
             _buffer.Add(new TextReplyMessage(text));
         }
 
-        public void RenderImage(byte[] imageData)
+        public void RenderImage(byte[] boardState)
         {
-            var imageId = _imageStore.Save(imageData);
-            var imageUrl = $"{_baseUrl}/api/board-images/{imageId}";
+            var encoded = BoardStateEncoder.Base64UrlEncode(boardState);
+            var imageUrl = $"{_baseUrl}/api/board-images/{encoded}";
             _buffer.Add(new ImageReplyMessage(imageUrl));
         }
 
