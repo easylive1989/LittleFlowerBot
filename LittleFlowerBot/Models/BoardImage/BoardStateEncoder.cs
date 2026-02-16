@@ -176,7 +176,7 @@ namespace LittleFlowerBot.Models.BoardImage
                     var byteIdx = 1 + idx / 2;
                     var shift = (idx % 2) * 4;
                     var val = (bytes[byteIdx] >> shift) & 0x0F;
-                    board.GameBoardArray[i][j] = (ChineseChess.ChineseChess)val;
+                    board.GameBoardArray[i][j] = (ChineseChess)val;
                     idx++;
                 }
             }
