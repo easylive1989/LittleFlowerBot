@@ -13,4 +13,6 @@ services:
         sync: false
       - key: LineChannelToken
         sync: false
+      - key: BaseUrl
+        value: https://littleflowerbot.onrender.com
     healthCheckPath: /health/live
