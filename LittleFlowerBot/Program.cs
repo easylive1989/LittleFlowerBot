@@ -1,7 +1,6 @@
 using LittleFlowerBot.DbContexts;
 using LittleFlowerBot.HealthChecks;
 using LittleFlowerBot.Middlewares;
-using LittleFlowerBot.Models.BoardImage;
 using LittleFlowerBot.Models.Caches;
 using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
@@ -30,14 +29,12 @@ builder.Services.AddSingleton(sp =>
 builder.Services.AddSingleton<MongoDbContext>();
 
 // 設定基本服務
-builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
 // 註冊快取服務
 builder.Services.AddScoped<IGameBoardCache, GameBoardCache>();
-builder.Services.AddSingleton<IBoardImageStore, BoardImageStore>();
 
 // 註冊工廠服務
 builder.Services.AddScoped<IGameFactory, GameFactory>();

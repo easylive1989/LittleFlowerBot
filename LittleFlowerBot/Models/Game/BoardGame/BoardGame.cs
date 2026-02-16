@@ -1,4 +1,5 @@
 ﻿using System;
+using LittleFlowerBot.Models.BoardImage;
 using LittleFlowerBot.Models.GameExceptions;
 
 namespace LittleFlowerBot.Models.Game.BoardGame
@@ -6,7 +7,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame
     public abstract class BoardGame<T> : Game where T : Enum
     {
         protected abstract bool IsCmdValid(string cmd);
-        
+
         public override void Act(string userId, string cmd)
         {
             var player = new Player(userId);
@@ -25,14 +26,14 @@ namespace LittleFlowerBot.Models.Game.BoardGame
                 {
                     Render("遊戲開始");
 
-                    RenderImage(GetBoard().GetBoardImage());
+                    RenderImage(BoardStateEncoder.EncodeToBytes(GetBoard()));
                 }
             }
             else if(IsCmdValid(cmd) && GetBoard().IsPlayerFully())
             {
                 Move(cmd, player);
 
-                RenderImage(GetBoard().GetBoardImage());
+                RenderImage(BoardStateEncoder.EncodeToBytes(GetBoard()));
 
                 if (GetBoard().IsGameOver())
                 {
