@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using LittleFlowerBot.Models.BoardImage;
 using LittleFlowerBot.Models.Message;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace LittleFlowerBot.Models.Renderer
 {
@@ -9,15 +10,17 @@ namespace LittleFlowerBot.Models.Renderer
     {
         private readonly IMessage _message;
         private readonly string _baseUrl;
+        private readonly ILogger<BufferedReplyRenderer> _logger;
         private readonly List<ReplyMessageItem> _buffer = new();
 
         public string? ReplyToken { get; set; }
         public List<QuickReplyItem>? QuickReplyItems { get; set; }
 
-        public BufferedReplyRenderer(IMessage message, IConfiguration configuration)
+        public BufferedReplyRenderer(IMessage message, IConfiguration configuration, ILogger<BufferedReplyRenderer> logger)
         {
             _message = message;
             _baseUrl = (configuration.GetValue<string>("BaseUrl") ?? "").TrimEnd('/');
+            _logger = logger;
         }
 
         public void Render(string text)
@@ -29,6 +32,7 @@ namespace LittleFlowerBot.Models.Renderer
         {
             var encoded = BoardStateEncoder.Base64UrlEncode(boardState);
             var imageUrl = $"{_baseUrl}/api/board-images/{encoded}";
+            _logger.LogInformation("Board image URL generated: {ImageUrl}", imageUrl);
             _buffer.Add(new ImageReplyMessage(imageUrl));
         }
 
