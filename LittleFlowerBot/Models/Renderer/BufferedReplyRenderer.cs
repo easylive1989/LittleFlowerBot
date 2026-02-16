@@ -19,7 +19,9 @@ namespace LittleFlowerBot.Models.Renderer
         public BufferedReplyRenderer(IMessage message, IConfiguration configuration, ILogger<BufferedReplyRenderer> logger)
         {
             _message = message;
-            _baseUrl = (configuration.GetValue<string>("BaseUrl") ?? "").TrimEnd('/');
+            _baseUrl = (Environment.GetEnvironmentVariable("BaseUrl")
+                ?? configuration.GetValue<string>("BaseUrl")
+                ?? "").TrimEnd('/');
             _logger = logger;
         }
 
