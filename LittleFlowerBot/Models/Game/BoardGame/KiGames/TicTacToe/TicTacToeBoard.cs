@@ -125,7 +125,9 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
             canvas.DrawRect(marginLeft, marginTop, boardWidth, boardHeight, gridPaint);
 
             // Draw labels
-            var typeface = SKTypeface.Default;
+            var typeface = SKTypeface.FromFamilyName("Noto Sans CJK TC")
+                           ?? SKTypeface.FromFamilyName("WenQuanYi Micro Hei")
+                           ?? SKTypeface.Default;
             using var labelFont = new SKFont(typeface, 20);
             using var labelPaint = new SKPaint { Color = new SKColor(0x33, 0x33, 0x33), IsAntialias = true };
             string[] colLabels = { "A", "B", "C" };

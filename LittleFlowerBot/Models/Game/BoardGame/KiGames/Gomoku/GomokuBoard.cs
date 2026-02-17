@@ -213,7 +213,9 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
             }
 
             // Draw column labels (a-o)
-            var typeface = SKTypeface.Default;
+            var typeface = SKTypeface.FromFamilyName("Noto Sans CJK TC")
+                           ?? SKTypeface.FromFamilyName("WenQuanYi Micro Hei")
+                           ?? SKTypeface.Default;
             using var labelFont = new SKFont(typeface, 18);
             using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
             for (int j = 0; j < Column; j++)
