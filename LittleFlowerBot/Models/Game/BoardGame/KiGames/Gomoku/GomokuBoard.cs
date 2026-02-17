@@ -212,14 +212,14 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
                 canvas.DrawCircle(sx, sy, 4, starPaint);
             }
 
-            // Draw column labels (A-O)
+            // Draw column labels (a-o)
             var typeface = SKTypeface.Default;
             using var labelFont = new SKFont(typeface, 14);
             using var labelPaint = new SKPaint { Color = new SKColor(0x30, 0x20, 0x00), IsAntialias = true };
             for (int j = 0; j < Column; j++)
             {
                 float x = marginLeft + j * cellSize;
-                string label = ((char)('A' + j)).ToString();
+                string label = ((char)('a' + j)).ToString();
                 float tw = labelFont.MeasureText(label, labelPaint);
                 canvas.DrawText(label, x - tw / 2, marginTop - 12, labelFont, labelPaint);
             }
