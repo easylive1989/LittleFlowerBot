@@ -166,8 +166,8 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
         public override byte[] GetBoardImage()
         {
             const int cellSize = 40;
-            const int marginLeft = 40;
-            const int marginTop = 35;
+            const int marginLeft = 55;
+            const int marginTop = 50;
             const int stoneRadius = 17;
 
             int boardWidth = (Column - 1) * cellSize;
@@ -214,23 +214,23 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
 
             // Draw column labels (a-o)
             var typeface = SKTypeface.Default;
-            using var labelFont = new SKFont(typeface, 14);
-            using var labelPaint = new SKPaint { Color = new SKColor(0x30, 0x20, 0x00), IsAntialias = true };
+            using var labelFont = new SKFont(typeface, 18);
+            using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true };
             for (int j = 0; j < Column; j++)
             {
                 float x = marginLeft + j * cellSize;
                 string label = ((char)('a' + j)).ToString();
                 float tw = labelFont.MeasureText(label, labelPaint);
-                canvas.DrawText(label, x - tw / 2, marginTop - 12, labelFont, labelPaint);
+                canvas.DrawText(label, x - tw / 2, marginTop - 16, labelFont, labelPaint);
             }
 
             // Draw row labels (1-15)
             for (int i = 0; i < Row; i++)
             {
-                float y = marginTop + i * cellSize + 5;
+                float y = marginTop + i * cellSize + 6;
                 string label = $"{i + 1}";
                 float tw = labelFont.MeasureText(label, labelPaint);
-                canvas.DrawText(label, marginLeft - tw - 8, y, labelFont, labelPaint);
+                canvas.DrawText(label, marginLeft - tw - 10, y, labelFont, labelPaint);
             }
 
             // Draw stones
