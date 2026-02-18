@@ -181,19 +181,19 @@ this.FeatureBackground();
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 24
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2,b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 25
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1,a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 26
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2,a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 27
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1,b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 28
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2,c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 29
     testRunner.Then("系統應該回覆包含 \"遊戲結束!\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -235,31 +235,31 @@ this.FeatureBackground();
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 36
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2,b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 37
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1,a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 38
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"1,b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"1b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 39
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"3,b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"3b\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 40
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2,a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"2a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 41
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"2,c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"2c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 42
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"3,a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"3a\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 43
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1,c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"1c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 44
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"3,c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"3c\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 45
     testRunner.Then("系統應該回覆包含 \"遊戲結束!\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

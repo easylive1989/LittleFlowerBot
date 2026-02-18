@@ -181,25 +181,25 @@ this.FeatureBackground();
     testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 25
-    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"1,i>2,i\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"1i>2i\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 27
-    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"10,i>9,i\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"10i>9i\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 29
-    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"2,i>2,f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"2i>2f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 31
-    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"9,i>9,h\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"9i>9h\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 33
-    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"2,f>10,f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"2f>10f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 35
-    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"9,h>9,f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group4\" 發送訊息 \"9h>9f\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 37
-    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"10,f>10,e\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group4\" 發送訊息 \"10f>10e\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 38
     testRunner.Then("系統應該回覆包含 \"遊戲結束!\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

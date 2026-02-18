@@ -50,7 +50,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "2,b");
+            InputCmd("userA", "2b");
 
             ImageShouldBeRendered(2);
         }
@@ -62,8 +62,8 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "2,b");
-            InputCmd("userB", "1,a");
+            InputCmd("userA", "2b");
+            InputCmd("userB", "1a");
 
             ImageShouldBeRendered(3);
         }
@@ -75,11 +75,11 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "2,b");
-            InputCmd("userB", "1,a");
-            InputCmd("userA", "2,a");
-            InputCmd("userB", "1,b");
-            InputCmd("userA", "2,c");
+            InputCmd("userA", "2b");
+            InputCmd("userB", "1a");
+            InputCmd("userA", "2a");
+            InputCmd("userB", "1b");
+            InputCmd("userA", "2c");
 
             MessageShouldBe("遊戲結束!");
         }
@@ -91,15 +91,15 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "2,b");
-            InputCmd("userB", "1,a");
-            InputCmd("userA", "1,b");
-            InputCmd("userB", "3,b");
-            InputCmd("userA", "2,a");
-            InputCmd("userB", "2,c");
-            InputCmd("userA", "3,a");
-            InputCmd("userB", "1,c");
-            InputCmd("userA", "3,c");
+            InputCmd("userA", "2b");
+            InputCmd("userB", "1a");
+            InputCmd("userA", "1b");
+            InputCmd("userB", "3b");
+            InputCmd("userA", "2a");
+            InputCmd("userB", "2c");
+            InputCmd("userA", "3a");
+            InputCmd("userB", "1c");
+            InputCmd("userA", "3c");
 
             MessageShouldBe("遊戲結束!");
         }
@@ -111,11 +111,11 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "1,c");
-            InputCmd("userB", "1,a");
-            InputCmd("userA", "2,b");
-            InputCmd("userB", "2,a");
-            InputCmd("userA", "3,a");
+            InputCmd("userA", "1c");
+            InputCmd("userB", "1a");
+            InputCmd("userA", "2b");
+            InputCmd("userB", "2a");
+            InputCmd("userA", "3a");
 
             MessageShouldBe("遊戲結束!");
         }
@@ -127,7 +127,7 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userB", "2,a");
+            InputCmd("userB", "2a");
 
             MessageShouldBe("不是你的回合");
         }
@@ -139,8 +139,8 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.TicTacToeGame
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "2,b");
-            InputCmd("userB", "2,b");
+            InputCmd("userA", "2b");
+            InputCmd("userB", "2b");
 
             MessageShouldBe("座標不合法");
         }

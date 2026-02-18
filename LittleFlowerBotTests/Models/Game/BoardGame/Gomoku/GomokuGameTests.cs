@@ -20,15 +20,15 @@ namespace LittleFlowerBotTests.Models.Game.BoardGame.Gomoku
 
             InputCmd("userA", "++");
             InputCmd("userB", "++");
-            InputCmd("userA", "1,a");
-            InputCmd("userB", "2,a");
-            InputCmd("userA", "1,b");
-            InputCmd("userB", "2,b");
-            InputCmd("userA", "1,c");
-            InputCmd("userB", "2,c");
-            InputCmd("userA", "1,d");
-            InputCmd("userB", "2,d");
-            InputCmd("userA", "1,e");
+            InputCmd("userA", "1a");
+            InputCmd("userB", "2a");
+            InputCmd("userA", "1b");
+            InputCmd("userB", "2b");
+            InputCmd("userA", "1c");
+            InputCmd("userB", "2c");
+            InputCmd("userA", "1d");
+            InputCmd("userB", "2d");
+            InputCmd("userA", "1e");
 
             MessageShouldBe("遊戲結束!");
         }

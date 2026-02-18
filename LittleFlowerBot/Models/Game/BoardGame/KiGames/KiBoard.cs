@@ -49,9 +49,10 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames
 
         private void GetCoordinate(string cmd, out int x, out int y)
         {
-            string[] coordinate = cmd.Split(',');
-            x = Int16.Parse(coordinate[0]) - 1;
-            y = coordinate[1].ToLower()[0] - 97;
+            int i = 0;
+            while (i < cmd.Length && char.IsDigit(cmd[i])) i++;
+            x = Int16.Parse(cmd.Substring(0, i)) - 1;
+            y = char.ToLower(cmd[i]) - 97;
         }
         
         private void Move(Player player, int x, int y)
