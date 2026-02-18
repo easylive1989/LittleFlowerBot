@@ -45,38 +45,38 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         {
             GivenTwoPlayerJoin();
 
-            _chineseChessGame.Act(PlayerA, "4,a>5,a");
+            _chineseChessGame.Act(PlayerA, "4a>5a");
 
             ImageShouldBeRendered(2);
         }
-        
+
         [Test]
         public void Act_MoveSoldierUpAtFirstMove_ShouldShowNotYourTurn()
         {
             GivenTwoPlayerJoin();
-            
-            _chineseChessGame.Act(PlayerB, "7,a>6,a");
-            
+
+            _chineseChessGame.Act(PlayerB, "7a>6a");
+
             MessageShouldBe("不是你的回合");
         }
-        
+
         [Test]
         public void Act_MoveSoldierUpWithWrongPlayer_ShouldShowNotYourTurn()
         {
             GivenTwoPlayerJoin();
-            
-            _chineseChessGame.Act(PlayerA, "7,a>6,a");
-            
+
+            _chineseChessGame.Act(PlayerA, "7a>6a");
+
             MessageShouldBe("不是你的棋子");
         }
-        
+
         [Test]
         public void Act_MoveChessToInvalidCoordinate()
         {
             GivenTwoPlayerJoin();
-            
-            _chineseChessGame.Act(PlayerA, "1,a>4,a");
-            
+
+            _chineseChessGame.Act(PlayerA, "1a>4a");
+
             MessageShouldBe("座標不合法");
         }
 
@@ -85,25 +85,25 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         {
             GivenTwoPlayerJoin();
 
-            _chineseChessGame.Act(PlayerA, "4,a>5,a");
-            _chineseChessGame.Act(PlayerB, "7,a>6,a");
-            _chineseChessGame.Act(PlayerA, "5,a>6,a");
+            _chineseChessGame.Act(PlayerA, "4a>5a");
+            _chineseChessGame.Act(PlayerB, "7a>6a");
+            _chineseChessGame.Act(PlayerA, "5a>6a");
 
             ImageShouldBeRendered(4);
         }
-        
+
         [Test]
         public void IsGameOver_KingAte_ShouldBeTrue()
         {
             GivenTwoPlayerJoin();
-            
-            _chineseChessGame.Act(PlayerA, "4,e>5,e");
-            _chineseChessGame.Act(PlayerB, "7,e>6,e");
-            _chineseChessGame.Act(PlayerA, "5,e>6,e");
-            _chineseChessGame.Act(PlayerB, "7,a>6,a");
-            _chineseChessGame.Act(PlayerA, "6,e>6,d");
-            _chineseChessGame.Act(PlayerB, "10,e>1,e");
-            
+
+            _chineseChessGame.Act(PlayerA, "4e>5e");
+            _chineseChessGame.Act(PlayerB, "7e>6e");
+            _chineseChessGame.Act(PlayerA, "5e>6e");
+            _chineseChessGame.Act(PlayerB, "7a>6a");
+            _chineseChessGame.Act(PlayerA, "6e>6d");
+            _chineseChessGame.Act(PlayerB, "10e>1e");
+
             MessageShouldBe("遊戲結束!");
         }
 
@@ -111,8 +111,8 @@ namespace LittleFlowerBotTests.Models.Game.ChessGames.ChineseChess
         public void Act_MovePawnWithWrongWay()
         {
             GivenTwoPlayerJoin();
-            
-            _chineseChessGame.Act(PlayerA, "4,a>6,a");
+
+            _chineseChessGame.Act(PlayerA, "4a>6a");
             
             MessageShouldBe("走法有誤");
         }

@@ -152,15 +152,23 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
         private Step GetStep(string cmd)
         {
             string[] move = cmd.Split('>');
-            string[] fromCoordinate = move[0].Split(',');
-            string[] toCoordinate = move[1].Split(',');
+            ParseCoordinate(move[0], out var fromX, out var fromY);
+            ParseCoordinate(move[1], out var toX, out var toY);
             return new Step()
             {
-                FromX = Int16.Parse(fromCoordinate[0]) - 1,
-                FromY = fromCoordinate[1].ToLower()[0] - 97,
-                ToX = Int16.Parse(toCoordinate[0]) - 1,
-                ToY = toCoordinate[1].ToLower()[0] - 97
+                FromX = fromX,
+                FromY = fromY,
+                ToX = toX,
+                ToY = toY
             };
+        }
+
+        private static void ParseCoordinate(string coord, out int x, out int y)
+        {
+            int i = 0;
+            while (i < coord.Length && char.IsDigit(coord[i])) i++;
+            x = Int16.Parse(coord.Substring(0, i)) - 1;
+            y = char.ToLower(coord[i]) - 97;
         }
 
         public override string GetBoardString()
