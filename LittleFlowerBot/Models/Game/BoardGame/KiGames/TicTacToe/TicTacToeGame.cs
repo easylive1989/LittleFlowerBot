@@ -17,7 +17,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe
 
         protected override bool IsCmdValid(string cmd)
         {
-            return new Regex(@"^[1-3],[a-c]$").IsMatch(cmd);
+            return new Regex(@"^[1-3][a-c]$").IsMatch(cmd);
         }
 
         public override void GameOver()

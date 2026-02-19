@@ -17,7 +17,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku
 
         protected override bool IsCmdValid(string cmd)
         {
-            return new Regex(@"^([1-9]|1[0-5]),[a-o]$").IsMatch(cmd.ToLower());
+            return new Regex(@"^([1-9]|1[0-5])[a-o]$").IsMatch(cmd.ToLower());
         }
         
         public override void GameOver()
