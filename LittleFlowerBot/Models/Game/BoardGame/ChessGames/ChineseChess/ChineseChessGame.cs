@@ -29,7 +29,7 @@ namespace LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess
 
         protected override bool IsCmdValid(string cmd)
         {
-            return new Regex(@"^([1-9]|10),[a-i]>([1-9]|10),[a-i]$").IsMatch(cmd);
+            return new Regex(@"^([1-9]|10)[a-i]>([1-9]|10)[a-i]$").IsMatch(cmd);
         }
     }
 }
