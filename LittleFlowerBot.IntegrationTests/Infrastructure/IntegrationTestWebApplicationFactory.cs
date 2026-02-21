@@ -81,6 +81,11 @@ public class IntegrationTestWebApplicationFactory : WebApplicationFactory<Progra
             services.AddSingleton<FakeRandomGenerator>();
             services.AddScoped<IRandomGenerator>(sp => sp.GetRequiredService<FakeRandomGenerator>());
 
+            // 註冊測試用好友檢查服務（預設回傳 true）
+            services.RemoveAll<ILineUserService>();
+            services.AddSingleton<FakeLineUserService>();
+            services.AddScoped<ILineUserService>(sp => sp.GetRequiredService<FakeLineUserService>());
+
             // 註冊測試用 Renderer 替身
             services.AddSingleton<TestTextRenderer>();
             services.RemoveAll<IRendererFactory>();

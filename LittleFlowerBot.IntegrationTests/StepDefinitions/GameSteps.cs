@@ -30,6 +30,13 @@ public class GameSteps
         _scenarioContext = scenarioContext;
     }
 
+    [When(@"使用者 ""(.*)"" 不是 Bot 好友")]
+    public void When使用者不是Bot好友(string userId)
+    {
+        var fakeService = _factory.ServiceProvider.GetRequiredService<FakeLineUserService>();
+        fakeService.SetNotFollower(userId);
+    }
+
     [Given(@"猜數字的目標數字為 (\d+)")]
     public void Given猜數字的目標數字為(int target)
     {
