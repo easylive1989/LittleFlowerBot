@@ -100,13 +100,13 @@ namespace LittleFlowerBot.Models.Game.Battleship
 
             if (state.IsSetupComplete)
             {
-                TextRenderer.RenderPrivate(userId, "你已完成佈置，請等待對手");
+                Render("你已完成佈置，請等待對手");
                 return;
             }
 
             if (state.Ships.Any(s => s.Type == shipType))
             {
-                TextRenderer.RenderPrivate(userId, $"{shipName} 已放置過");
+                Render($"{shipName} 已放置過");
                 return;
             }
 
@@ -115,13 +115,13 @@ namespace LittleFlowerBot.Models.Game.Battleship
 
             if (coordinates == null)
             {
-                TextRenderer.RenderPrivate(userId, "放置失敗：超出棋盤邊界");
+                Render("放置失敗：超出棋盤邊界");
                 return;
             }
 
             if (coordinates.Any(c => state.OwnGrid[c.Row][c.Col] == CellState.Ship))
             {
-                TextRenderer.RenderPrivate(userId, "放置失敗：與其他船艦重疊");
+                Render("放置失敗：與其他船艦重疊");
                 return;
             }
 
@@ -132,14 +132,14 @@ namespace LittleFlowerBot.Models.Game.Battleship
                 state.OwnGrid[coord.Row][coord.Col] = CellState.Ship;
             }
 
-            TextRenderer.RenderPrivate(userId, $"已放置 {shipName}（{size}格）");
+            Render($"已放置 {shipName}（{size}格）");
             TextRenderer.RenderPrivateImage(userId, BattleshipBoardImageRenderer.RenderOwnGrid(state));
             Render($"{userId} 已放置一艘船（{state.Ships.Count}/5）");
 
             if (state.Ships.Count == 5)
             {
                 state.IsSetupComplete = true;
-                TextRenderer.RenderPrivate(userId, "佈置完成！等待對手完成佈置");
+                Render("佈置完成！等待對手完成佈置");
 
                 if (board.PlayerStates.Values.All(s => s.IsSetupComplete))
                 {

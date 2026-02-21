@@ -72,6 +72,7 @@ else
 {
     builder.Services.AddScoped<ITextRenderer, BufferedReplyRenderer>();
     builder.Services.AddScoped<IMessage, LineMessage>();
+    builder.Services.AddScoped<ILineUserService, LineUserService>();
 }
 
 // 設定 Health Checks

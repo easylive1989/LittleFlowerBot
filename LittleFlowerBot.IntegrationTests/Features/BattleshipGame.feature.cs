@@ -83,12 +83,12 @@ namespace LittleFlowerBot.IntegrationTests.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("創建海戰棋遊戲")]
-        public void 創建海戰棋遊戲()
+        [NUnit.Framework.DescriptionAttribute("非好友玩家無法加入海戰棋")]
+        public void 非好友玩家無法加入海戰棋()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("創建海戰棋遊戲", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("非好友玩家無法加入海戰棋", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 9
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -106,6 +106,42 @@ this.FeatureBackground();
     testRunner.When("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"玩海戰棋\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 11
+    testRunner.And("使用者 \"userC\" 不是 Bot 好友", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 12
+    testRunner.And("使用者 \"userC\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 13
+    testRunner.Then("系統應該回覆包含 \"好友\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("創建海戰棋遊戲")]
+        public void 創建海戰棋遊戲()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("創建海戰棋遊戲", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 15
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 16
+    testRunner.When("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"玩海戰棋\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 17
     testRunner.Then("系統應該回覆包含 \"++\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -119,42 +155,6 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("兩位玩家加入遊戲並開始佈置", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 13
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 6
-this.FeatureBackground();
-#line hidden
-#line 14
-    testRunner.When("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"玩海戰棋\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 15
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 16
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 17
-    testRunner.Then("系統應該回覆包含 \"佈置\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("完整遊戲流程至戰鬥開始")]
-        public void 完整遊戲流程至戰鬥開始()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("完整遊戲流程至戰鬥開始", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 19
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -177,37 +177,73 @@ this.FeatureBackground();
 #line 22
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 24
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 23
+    testRunner.Then("系統應該回覆包含 \"佈置\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("完整遊戲流程至戰鬥開始")]
+        public void 完整遊戲流程至戰鬥開始()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("完整遊戲流程至戰鬥開始", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 25
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 6
+this.FeatureBackground();
 #line hidden
 #line 26
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.When("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"玩海戰棋\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 27
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 28
-    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 驅逐艦 a5 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 30
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 31
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 32
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 33
-    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 34
+    testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 驅逐艦 a5 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 36
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 37
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 38
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 39
+    testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 40
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 驅逐艦 a5 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 35
+#line 41
     testRunner.Then("系統應該回覆包含 \"戰鬥開始\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -221,7 +257,7 @@ this.FeatureBackground();
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("完整遊戲流程至勝利", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 37
+#line 43
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -234,145 +270,145 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
 this.FeatureBackground();
 #line hidden
-#line 38
+#line 44
     testRunner.When("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"玩海戰棋\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 39
+#line 45
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 40
+#line 46
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"++\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 41
+#line 47
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 42
+#line 48
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 43
+#line 49
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 44
+#line 50
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 45
+#line 51
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"放置 驅逐艦 a5 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 46
+#line 52
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 航母 a1 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 47
+#line 53
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 戰艦 a2 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 48
+#line 54
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 巡洋艦 a3 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 49
+#line 55
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 潛艇 a4 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 50
+#line 56
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"放置 驅逐艦 a5 橫\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 52
+#line 58
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"a1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 53
+#line 59
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j10\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 54
+#line 60
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"b1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 55
+#line 61
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j9\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 56
+#line 62
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"c1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 57
+#line 63
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 58
+#line 64
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"d1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 59
+#line 65
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j7\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 60
+#line 66
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"e1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 61
+#line 67
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j6\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 62
+#line 68
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"a2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 63
+#line 69
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j5\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 64
+#line 70
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"b2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 65
+#line 71
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j4\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 66
+#line 72
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"c2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 67
+#line 73
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j3\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 68
+#line 74
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"d2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 69
+#line 75
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 70
+#line 76
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"a3\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 71
+#line 77
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"j1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 72
+#line 78
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"b3\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 73
+#line 79
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i10\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 74
+#line 80
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"c3\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 75
+#line 81
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i9\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 76
+#line 82
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"a4\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 77
+#line 83
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 78
+#line 84
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"b4\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 79
+#line 85
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i7\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 80
+#line 86
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"c4\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 81
+#line 87
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i6\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 82
+#line 88
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"a5\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 83
+#line 89
     testRunner.And("使用者 \"userB\" 在群組 \"group1\" 發送訊息 \"i5\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 84
+#line 90
     testRunner.And("使用者 \"userA\" 在群組 \"group1\" 發送訊息 \"b5\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 85
+#line 91
     testRunner.Then("系統應該回覆包含 \"勝利\" 的訊息", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

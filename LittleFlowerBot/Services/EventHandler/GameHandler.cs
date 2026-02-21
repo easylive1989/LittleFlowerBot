@@ -29,12 +29,14 @@ namespace LittleFlowerBot.Services.EventHandler
         private readonly IGameFactory _gameFactory;
         private readonly IGameBoardCache _gameBoardCache;
         private readonly IRendererFactory _rendererFactory;
+        private readonly ILineUserService? _lineUserService;
 
-        public GameHandler(IGameFactory gameFactory, IGameBoardCache gameBoardCache, IRendererFactory rendererFactory)
+        public GameHandler(IGameFactory gameFactory, IGameBoardCache gameBoardCache, IRendererFactory rendererFactory, ILineUserService? lineUserService = null)
         {
             _gameFactory = gameFactory;
             _gameBoardCache = gameBoardCache;
             _rendererFactory = rendererFactory;
+            _lineUserService = lineUserService;
         }
 
         public async Task Act(Event @event)
@@ -101,6 +103,17 @@ namespace LittleFlowerBot.Services.EventHandler
                 var gameBoard = await _gameBoardCache.Get(gameId);
                 if (gameBoard != null)
                 {
+                    if (cmd == "++" && gameBoard is BattleshipBoard && _lineUserService != null)
+                    {
+                        var isFollower = await _lineUserService.IsFollower(userId);
+                        if (!isFollower)
+                        {
+                            renderer.Render("請先加入 Bot 好友才能參加海戰棋！");
+                            (renderer as BufferedReplyRenderer)?.Flush();
+                            return;
+                        }
+                    }
+
                     var game = _gameFactory.CreateGame(gameBoard);
                     game.TextRenderer = renderer;
                     game.Act(userId, cmd);
