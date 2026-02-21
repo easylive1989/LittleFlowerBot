@@ -6,6 +6,12 @@ Feature: 海戰棋遊戲
 Background:
     Given 測試環境已準備就緒
 
+Scenario: 非好友玩家無法加入海戰棋
+    When 使用者 "userA" 在群組 "group1" 發送訊息 "玩海戰棋"
+    And 使用者 "userC" 不是 Bot 好友
+    And 使用者 "userC" 在群組 "group1" 發送訊息 "++"
+    Then 系統應該回覆包含 "好友" 的訊息
+
 Scenario: 創建海戰棋遊戲
     When 使用者 "userA" 在群組 "group1" 發送訊息 "玩海戰棋"
     Then 系統應該回覆包含 "++" 的訊息

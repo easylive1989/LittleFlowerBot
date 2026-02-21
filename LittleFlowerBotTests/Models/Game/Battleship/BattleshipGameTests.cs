@@ -108,7 +108,7 @@ namespace LittleFlowerBotTests.Models.Game.Battleship
 
             Act("playerA", "放置 航母 a1 橫");
 
-            _renderer.Received().RenderPrivate("playerA", Arg.Is<string>(s => s.Contains("航母")));
+            _renderer.Received().Render(Arg.Is<string>(s => s.Contains("航母")));
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace LittleFlowerBotTests.Models.Game.Battleship
 
             Act("playerA", "放置 航母 g1 橫");
 
-            _renderer.Received().RenderPrivate("playerA", Arg.Is<string>(s => s.Contains("超出")));
+            _renderer.Received().Render(Arg.Is<string>(s => s.Contains("超出")));
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace LittleFlowerBotTests.Models.Game.Battleship
 
             Act("playerA", "放置 巡洋艦 a1 直");
 
-            _renderer.Received().RenderPrivate("playerA", Arg.Is<string>(s => s.Contains("重疊")));
+            _renderer.Received().Render(Arg.Is<string>(s => s.Contains("重疊")));
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace LittleFlowerBotTests.Models.Game.Battleship
 
             Act("playerA", "放置 驅逐艦 c1 橫");
 
-            _renderer.Received().RenderPrivate("playerA", Arg.Is<string>(s => s.Contains("已放置")));
+            _renderer.Received().Render(Arg.Is<string>(s => s.Contains("已放置")));
         }
 
         [Test]
@@ -180,7 +180,8 @@ namespace LittleFlowerBotTests.Models.Game.Battleship
 
             Act("playerA", "放置 abc");
 
-            _renderer.DidNotReceive().RenderPrivate(Arg.Any<string>(), Arg.Any<string>());
+            // 無效指令不產生任何回覆（不含進度訊息）
+            _renderer.DidNotReceive().Render(Arg.Is<string>(s => s.Contains("放置")));
         }
 
         [Test]

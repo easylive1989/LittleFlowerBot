@@ -55,6 +55,10 @@ public class TestHooks
         // 清除測試訊息記錄
         TestTextRenderer.Clear();
 
+        // 清除好友檢查狀態
+        var fakeLineUserService = _factory.ServiceProvider.GetRequiredService<FakeLineUserService>();
+        fakeLineUserService.Clear();
+
         // 清理 MongoDB 測試資料
         var context = _factory.ServiceProvider.GetRequiredService<MongoDbContext>();
         context.GameStates.DeleteMany(Builders<GameStateDocument>.Filter.Empty);
