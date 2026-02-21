@@ -15,6 +15,10 @@ public class TestTextRenderer : ITextRenderer, IMessage
 
     public void RenderImage(byte[] imageData) => _messages.Add("[BoardImage]");
 
+    public void RenderPrivate(string userId, string text) => _messages.Add($"[私訊 {userId}] {text}");
+
+    public void RenderPrivateImage(string userId, byte[] imageData) => _messages.Add($"[私訊 {userId}] [BoardImage]");
+
     public void Reply(string replyToken, string text, List<QuickReplyItem>? quickReplyItems = null) => _messages.Add(text);
 
     public void ReplyMessages(string replyToken, List<ReplyMessageItem> messages, List<QuickReplyItem>? quickReplyItems = null)
@@ -28,6 +32,24 @@ public class TestTextRenderer : ITextRenderer, IMessage
                     break;
                 case ImageReplyMessage imageMsg:
                     _messages.Add("[BoardImage]");
+                    break;
+            }
+        }
+    }
+
+    public void Push(string userId, string text) => _messages.Add($"[私訊 {userId}] {text}");
+
+    public void PushMessages(string userId, List<ReplyMessageItem> messages)
+    {
+        foreach (var msg in messages)
+        {
+            switch (msg)
+            {
+                case TextReplyMessage textMsg:
+                    _messages.Add($"[私訊 {userId}] {textMsg.Text}");
+                    break;
+                case ImageReplyMessage imageMsg:
+                    _messages.Add($"[私訊 {userId}] [BoardImage]");
                     break;
             }
         }

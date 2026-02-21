@@ -6,5 +6,7 @@ namespace LittleFlowerBot.Models.Message
     {
         void Reply(string replyToken, string text, List<QuickReplyItem>? quickReplyItems = null);
         void ReplyMessages(string replyToken, List<ReplyMessageItem> messages, List<QuickReplyItem>? quickReplyItems = null);
+        void Push(string userId, string text);
+        void PushMessages(string userId, List<ReplyMessageItem> messages);
     }
 }

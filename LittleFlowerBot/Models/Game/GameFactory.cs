@@ -1,4 +1,5 @@
 ﻿using LittleFlowerBot.Models.Game.GuessNumber;
+using LittleFlowerBot.Models.Game.Battleship;
 using System;
 using System.Collections.Generic;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
@@ -17,6 +18,7 @@ namespace LittleFlowerBot.Models.Game
             {typeof(TicTacToeBoard), typeof(TicTacToeGame)},
             {typeof(GomokuBoard), typeof(GomokuGame)},
             {typeof(ChineseChessBoard), typeof(ChineseChessGame)},
+            {typeof(BattleshipBoard), typeof(BattleshipGame)},
         };
 
         public GameFactory(IServiceProvider serviceProvider)

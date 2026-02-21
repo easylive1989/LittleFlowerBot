@@ -5,6 +5,7 @@ namespace LittleFlowerBot.Models.Game
         GuessNumber,
         TicTacToe,
         Gomoku,
-        ChineseChess
+        ChineseChess,
+        Battleship
     }
 }

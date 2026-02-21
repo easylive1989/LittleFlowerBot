@@ -56,6 +56,15 @@ public class GameSteps
             $"預期訊息中應包含 \"{expectedText}\"，但實際訊息為：[{string.Join(", ", messages)}]");
     }
 
+    [Then(@"系統應該有私訊給 ""(.*)"" 包含 ""(.*)"" 的訊息")]
+    public void Then系統應該有私訊給包含的訊息(string userId, string expectedText)
+    {
+        var messages = TestTextRenderer.Messages;
+        var prefix = $"[私訊 {userId}]";
+        messages.Should().Contain(msg => msg.StartsWith(prefix) && msg.Contains(expectedText),
+            $"預期有私訊給 \"{userId}\" 包含 \"{expectedText}\"，但實際訊息為：[{string.Join(", ", messages)}]");
+    }
+
     [Then(@"資料庫中應該有 (\d+) 筆井字遊戲結果")]
     public void Then資料庫中應該有N筆井字遊戲結果(int expectedCount)
     {

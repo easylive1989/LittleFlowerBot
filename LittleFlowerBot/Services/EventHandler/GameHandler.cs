@@ -9,6 +9,7 @@ using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
+using LittleFlowerBot.Models.Game.Battleship;
 using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Models.Renderer;
 
@@ -22,6 +23,7 @@ namespace LittleFlowerBot.Services.EventHandler
             {"玩井字遊戲", typeof(TicTacToeBoard)},
             {"玩五子棋", typeof(GomokuBoard)},
             {"玩象棋", typeof(ChineseChessBoard)},
+            {"玩海戰棋", typeof(BattleshipBoard)},
         };
 
         private readonly IGameFactory _gameFactory;
@@ -57,6 +59,7 @@ namespace LittleFlowerBot.Services.EventHandler
                     "玩井字遊戲 - 開始井字遊戲",
                     "玩五子棋 - 開始五子棋遊戲",
                     "玩象棋 - 開始象棋遊戲",
+                    "玩海戰棋 - 開始海戰棋遊戲",
                     "我認輸了 - 放棄目前的遊戲",
                     "我的戰績 - 查看遊戲戰績",
                 }));
@@ -76,6 +79,7 @@ namespace LittleFlowerBot.Services.EventHandler
                         new QuickReplyItem("井字遊戲", "玩井字遊戲"),
                         new QuickReplyItem("五子棋", "玩五子棋"),
                         new QuickReplyItem("象棋", "玩象棋"),
+                        new QuickReplyItem("海戰棋", "玩海戰棋"),
                     };
                 }
                 bufferedRenderer?.Flush();

@@ -6,6 +6,7 @@ using LittleFlowerBot.Models.Game;
 using LittleFlowerBot.Models.Game.BoardGame.ChessGames.ChineseChess;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
+using LittleFlowerBot.Models.Game.Battleship;
 using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Models.HealthCheck;
 using LittleFlowerBot.Models.Message;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<TicTacToeGame>();
 builder.Services.AddScoped<GomokuGame>();
 builder.Services.AddScoped<ChineseChessGame>();
 builder.Services.AddScoped<GuessNumberGame>();
+builder.Services.AddScoped<BattleshipGame>();
 
 // 註冊事件處理器
 builder.Services.AddScoped<ILineEventHandler, GameHandler>();

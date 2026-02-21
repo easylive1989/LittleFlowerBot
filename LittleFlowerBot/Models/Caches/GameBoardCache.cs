@@ -11,6 +11,7 @@ using ChineseChessType = LittleFlowerBot.Models.Game.BoardGame.ChessGames.Chines
 using LittleFlowerBot.Models.Game.BoardGame.KiGames;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.Gomoku;
 using LittleFlowerBot.Models.Game.BoardGame.KiGames.TicTacToe;
+using LittleFlowerBot.Models.Game.Battleship;
 using LittleFlowerBot.Models.Game.GuessNumber;
 using LittleFlowerBot.Utils;
 using MongoDB.Driver;
@@ -28,6 +29,7 @@ namespace LittleFlowerBot.Models.Caches
             {typeof(GomokuBoard), GameType.Gomoku},
             {typeof(ChineseChessBoard), GameType.ChineseChess},
             {typeof(GuessNumberBoard), GameType.GuessNumber},
+            {typeof(BattleshipBoard), GameType.Battleship},
         };
 
         public GameBoardCache(MongoDbContext context)
@@ -73,6 +75,8 @@ namespace LittleFlowerBot.Models.Caches
                         return JsonSerializer.Deserialize<GomokuBoard>(document.State, _jsonSerializerOptions);
                     case GameType.ChineseChess:
                         return JsonSerializer.Deserialize<ChineseChessBoard>(document.State, _jsonSerializerOptions);
+                    case GameType.Battleship:
+                        return JsonSerializer.Deserialize<BattleshipBoard>(document.State, _jsonSerializerOptions);
                 }
             }
 
