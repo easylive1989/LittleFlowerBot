@@ -26,31 +26,7 @@ namespace LittleFlowerBot.Models.Message
 
         public void ReplyMessages(string replyToken, List<ReplyMessageItem> messages, List<QuickReplyItem>? quickReplyItems = null)
         {
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var lineMessages = new List<Dictionary<string, object>>();
-
-            foreach (var msg in messages)
-            {
-                switch (msg)
-                {
-                    case TextReplyMessage textMsg:
-                        lineMessages.Add(new Dictionary<string, object>
-                        {
-                            { "type", "text" },
-                            { "text", textMsg.Text }
-                        });
-                        break;
-                    case ImageReplyMessage imageMsg:
-                        lineMessages.Add(new Dictionary<string, object>
-                        {
-                            { "type", "image" },
-                            { "originalContentUrl", imageMsg.ImageUrl },
-                            { "previewImageUrl", imageMsg.ImageUrl }
-                        });
-                        break;
-                }
-            }
+            var lineMessages = BuildLineMessages(messages);
 
             if (quickReplyItems != null && quickReplyItems.Count > 0 && lineMessages.Count > 0)
             {
@@ -75,10 +51,64 @@ namespace LittleFlowerBot.Models.Message
                 messages = lineMessages
             };
 
+            SendRequest("https://api.line.me/v2/bot/message/reply", requestBody);
+        }
+
+        public void Push(string userId, string text)
+        {
+            var messages = new List<ReplyMessageItem> { new TextReplyMessage(text) };
+            PushMessages(userId, messages);
+        }
+
+        public void PushMessages(string userId, List<ReplyMessageItem> messages)
+        {
+            var lineMessages = BuildLineMessages(messages);
+
+            var requestBody = new
+            {
+                to = userId,
+                messages = lineMessages
+            };
+
+            SendRequest("https://api.line.me/v2/bot/message/push", requestBody);
+        }
+
+        private List<Dictionary<string, object>> BuildLineMessages(List<ReplyMessageItem> messages)
+        {
+            var lineMessages = new List<Dictionary<string, object>>();
+
+            foreach (var msg in messages)
+            {
+                switch (msg)
+                {
+                    case TextReplyMessage textMsg:
+                        lineMessages.Add(new Dictionary<string, object>
+                        {
+                            { "type", "text" },
+                            { "text", textMsg.Text }
+                        });
+                        break;
+                    case ImageReplyMessage imageMsg:
+                        lineMessages.Add(new Dictionary<string, object>
+                        {
+                            { "type", "image" },
+                            { "originalContentUrl", imageMsg.ImageUrl },
+                            { "previewImageUrl", imageMsg.ImageUrl }
+                        });
+                        break;
+                }
+            }
+
+            return lineMessages;
+        }
+
+        private void SendRequest(string url, object requestBody)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
             var json = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.line.me/v2/bot/message/reply")
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = content
             };
@@ -89,7 +119,7 @@ namespace LittleFlowerBot.Models.Message
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"ReplyMessage API ERROR: {responseBody}");
+                throw new Exception($"API ERROR: {responseBody}");
             }
         }
     }

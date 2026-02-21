@@ -12,6 +12,7 @@ namespace LittleFlowerBot.Models.Renderer
         private readonly string _baseUrl;
         private readonly ILogger<BufferedReplyRenderer> _logger;
         private readonly List<ReplyMessageItem> _buffer = new();
+        private readonly Dictionary<string, List<ReplyMessageItem>> _privateBuffers = new();
 
         public string? ReplyToken { get; set; }
         public List<QuickReplyItem>? QuickReplyItems { get; set; }
@@ -38,17 +39,41 @@ namespace LittleFlowerBot.Models.Renderer
             _buffer.Add(new ImageReplyMessage(imageUrl));
         }
 
+        public void RenderPrivate(string userId, string text)
+        {
+            if (!_privateBuffers.ContainsKey(userId))
+                _privateBuffers[userId] = new List<ReplyMessageItem>();
+            _privateBuffers[userId].Add(new TextReplyMessage(text));
+        }
+
+        public void RenderPrivateImage(string userId, byte[] boardState)
+        {
+            if (!_privateBuffers.ContainsKey(userId))
+                _privateBuffers[userId] = new List<ReplyMessageItem>();
+            var encoded = BoardStateEncoder.Base64UrlEncode(boardState);
+            var imageUrl = $"{_baseUrl}/api/board-images/{encoded}";
+            _privateBuffers[userId].Add(new ImageReplyMessage(imageUrl));
+        }
+
         public void Flush()
         {
-            if (_buffer.Count == 0 || string.IsNullOrEmpty(ReplyToken))
+            if (_buffer.Count > 0 && !string.IsNullOrEmpty(ReplyToken))
             {
-                return;
+                var messages = MergeConsecutiveTextMessages(_buffer);
+                _message.ReplyMessages(ReplyToken, messages, QuickReplyItems);
+                _buffer.Clear();
+                QuickReplyItems = null;
             }
 
-            var messages = MergeConsecutiveTextMessages(_buffer);
-            _message.ReplyMessages(ReplyToken, messages, QuickReplyItems);
-            _buffer.Clear();
-            QuickReplyItems = null;
+            foreach (var (userId, items) in _privateBuffers)
+            {
+                if (items.Count > 0)
+                {
+                    var messages = MergeConsecutiveTextMessages(items);
+                    _message.PushMessages(userId, messages);
+                }
+            }
+            _privateBuffers.Clear();
         }
 
         private static List<ReplyMessageItem> MergeConsecutiveTextMessages(List<ReplyMessageItem> items)
