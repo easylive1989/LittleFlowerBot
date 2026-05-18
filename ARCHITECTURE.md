@@ -18,14 +18,15 @@
 
 **主要元件**:
 - `Controllers/` - Web API 控制器
-  - `LineChatController` - Line Bot 訊息處理
+  - `LineChatController` - Line Bot Webhook 入口
+  - `BoardImageController` - 棋盤圖片端點
   - `MgmtController` - 管理功能
-  - `SubscriptionsController` - 訂閱管理
 - `Middlewares/` - HTTP 中介軟體
   - `GlobalExceptionHandlerMiddleware` - 全域例外處理
 - `HealthChecks/` - 健康檢查實作
   - `ApplicationHealthCheck` - 應用程式狀態檢查
   - `MemoryHealthCheck` - 記憶體監控
+  - `MongoDbHealthCheck` - MongoDB 連線檢查
 
 ---
 
@@ -40,10 +41,8 @@
 
 **主要元件**:
 - `Services/EventHandler/` - Line Bot 事件處理器
-  - `GameHandler` - 遊戲相關事件處理
-  - `RecordHandler` - 記錄管理
-  - `RegistrationHandler` - 註冊流程處理
-- `Services/RedisConfigurationService` - Redis 配置服務
+  - `GameHandler` - 遊戲指令處理（開新局、下棋、認輸等）
+  - `RecordHandler` - 戰績查詢處理
 
 ---
 
@@ -62,13 +61,14 @@
 - `Models/Game/` - 遊戲領域模型
   - `Game` - 遊戲基底類別
   - `GameFactory` - 遊戲工廠
-  - `BoardGame/` - 棋盤遊戲
+  - `BoardGame/` - 棋盤遊戲基底
     - `ChessGames/ChineseChess/` - 象棋實作
     - `KiGames/Gomoku/` - 五子棋實作
     - `KiGames/TicTacToe/` - 井字遊戲實作
   - `GuessNumber/` - 猜數字遊戲
-- `Models/Subscribe/` - 訂閱領域模型
-  - `Subscription` - 訂閱實體
+  - `Battleship/` - 海戰棋遊戲
+- `Models/GameResult/` - 遊戲結果領域模型
+  - `BoardGameResult` - 戰績紀錄
 
 #### 領域例外
 - `Models/GameExceptions/` - 遊戲相關例外
@@ -77,20 +77,19 @@
   - `NotYourChessException` - 不是你的棋子
   - `MoveInvalidException` - 移動無效
   - `CoordinateValidException` - 座標無效
-- `Models/Exceptions/` - 其他領域例外
-  - `LineNotifyTokenInvalidException` - Line Notify Token 無效
 
 #### 領域服務接口
 - `Models/Game/IGameFactory` - 遊戲工廠接口
 - `Models/Renderer/ITextRenderer` - 文字渲染器接口
 - `Models/Renderer/IRendererFactory` - 渲染器工廠接口
 - `Models/Message/IMessage` - 訊息服務接口
+- `Models/Message/ILineUserService` - Line 使用者查詢接口（好友檢查）
 
 ---
 
 ### 🔧 基礎設施層（Infrastructure Layer）
 
-**位置**: `/DbContexts`, `/Repositories`, `/Models/Caches`, `/Models/Renderer`
+**位置**: `/DbContexts`, `/Repositories`, `/Models/Caches`, `/Models/Renderer`, `/Models/Message`
 
 **職責**:
 - 資料持久化
@@ -101,30 +100,29 @@
 **主要元件**:
 
 #### 資料存取
-- `DbContexts/LittleFlowerBotContext` - EF Core DbContext
-- `Migrations/` - 資料庫遷移檔案
+- `DbContexts/MongoDbContext` - MongoDB 上下文（提供 collection 存取）
 - `Repositories/` - Repository 實作
-  - `BoardGameResultsRepository` - 遊戲結果資料存取
-  - `SubscriptionRepository` - 訂閱資料存取
+  - `BoardGameResultsRepository` - 遊戲戰績資料存取
 
 #### 快取服務
-- `Models/Caches/` - 快取實作
-  - `GameBoardCache` - 遊戲盤面快取
-  - `RegistrationCache` - 註冊資訊快取
+- `Models/Caches/` - 遊戲盤面狀態
+  - `GameBoardCache` - 遊戲盤面快取（以 MongoDB 為存放媒介）
+  - `GameStateDocument` - 盤面序列化 Document
 
-#### 外部服務
+#### 外部服務整合
 - `Models/Renderer/` - 渲染服務實作
-  - `LineNotifySender` - Line Notify 發送服務
-  - `LineNotifySubscription` - Line Notify 訂閱服務
-  - `ConsoleRenderer` - 控制台輸出（開發用）
-- `Models/Message/` - 訊息服務實作
-  - `LineMessage` - Line Bot 訊息發送
+  - `BufferedReplyRenderer` - 緩衝後一次性 reply 給 Line（生產環境）
+  - `ConsoleRenderer` - 控制台輸出（開發環境）
+- `Models/Message/` - Line API 客戶端
+  - `LineMessage` - Line Push / Reply 訊息發送
+  - `LineUserService` - 查詢使用者是否為 Bot 好友
+- `Models/Game/Battleship/BattleshipBoardImageRenderer` - 海戰棋盤面圖片渲染（SkiaSharp）
 
 ---
 
 ### 📦 共用層（Shared/Common）
 
-**位置**: `/Models/Requests`, `/Models/Responses`, `/Models/ViewModels`, `/Utils`
+**位置**: `/Models/HealthCheck`, `/Models/Message`, `/Utils`, `/Extensions`
 
 **職責**:
 - 資料傳輸對象（DTOs）
@@ -132,16 +130,10 @@
 - 跨層共用的模型
 
 **主要元件**:
-- `Models/Requests/` - 請求 DTOs
-  - `LineNotifyRequest` - Line Notify 請求
-- `Models/Responses/` - 回應 DTOs
-  - `ErrorResponse` - 錯誤回應
-  - `LineNotifyTokenResponse` - Token 回應
-- `Models/HealthCheck/` - 健康檢查 DTOs
-  - `HealthCheckResponse` - 健康檢查回應
-- `Models/ViewModels/` - 視圖模型
-- `Utils/` - 工具類別
-  - `DictionaryJsonConverter` - JSON 轉換器
+- `Models/HealthCheck/HealthCheckResponse` - 健康檢查回應 DTO
+- `Models/Message/QuickReplyItem` / `ReplyMessageItem` - Line 訊息結構
+- `Extensions/EventExtensions` - Line Event 擴充方法（取得 senderId / userId / text）
+- `Utils/DictionaryJsonConverter` - JSON 轉換器
 
 ---
 
@@ -170,17 +162,17 @@
 ### 典型的請求處理流程
 
 ```
-1. HTTP Request
+1. HTTP Request (Line Webhook)
    ↓
-2. Controller (Presentation)
+2. LineChatController (Presentation)
    ↓
-3. Event Handler (Application)
+3. GameHandler / RecordHandler (Application)
    ↓
-4. Domain Service (Domain)
+4. Game.Act() (Domain)
    ↓
-5. Repository (Infrastructure)
+5. GameBoardCache / Repository (Infrastructure)
    ↓
-6. Database
+6. MongoDB
 ```
 
 ### 範例：玩家下棋
@@ -189,14 +181,14 @@
 LineChatController
    ↓ 接收 Line Webhook
 GameHandler (EventHandler)
-   ↓ 解析命令
+   ↓ 解析命令、判斷新局 / 既有遊戲
 Game.Act() (Domain)
-   ↓ 驗證規則
+   ↓ 驗證輸入格式、套用規則
 GameBoard.Move() (Domain)
    ↓ 更新盤面
 GameBoardCache.Set() (Infrastructure)
-   ↓ 儲存狀態
-Redis
+   ↓ 儲存盤面狀態
+MongoDB
 ```
 
 ---
@@ -206,17 +198,16 @@ Redis
 ### 框架與函式庫
 - **.NET 10.0** - 應用程式框架
 - **ASP.NET Core** - Web API 框架
-- **Entity Framework Core 9.0** - ORM
-- **StackExchange.Redis** - Redis 客戶端
-- **NUnit 4.2** - 單元測試框架
+- **MongoDB.Driver 3.4** - MongoDB 官方驅動
+- **LineBotSDK 2.0** - Line Bot 客戶端
+- **SkiaSharp 3.116** - 棋盤圖片渲染
+- **NUnit 4.2** + **NSubstitute 5.3** - 測試
 
-### 資料庫與快取
-- **PostgreSQL** - 主要資料庫
-- **Redis** - 分散式快取
+### 資料儲存
+- **MongoDB** - 戰績與遊戲盤面狀態
 
 ### 外部服務
 - **Line Messaging API** - Line Bot 整合
-- **Line Notify API** - 通知推送
 
 ---
 
@@ -229,15 +220,14 @@ Redis
 - `RendererFactory` - 創建不同類型的渲染器
 
 ### 2. **Repository Pattern（倉儲模式）**
-- `BoardGameResultsRepository` - 封裝資料存取邏輯
-- `SubscriptionRepository` - 封裝訂閱資料操作
+- `BoardGameResultsRepository` - 封裝戰績資料存取邏輯
 
 ### 3. **Strategy Pattern（策略模式）**
-- `ITextRenderer` - 不同的文字輸出策略
+- `ITextRenderer` - 不同的文字輸出策略（Console / Line Reply）
 - `IMessage` - 不同的訊息發送策略
 
 ### 4. **Chain of Responsibility（責任鏈模式）**
-- `ILineEventHandler` - 事件處理器鏈
+- `ILineEventHandler` - 事件處理器鏈（GameHandler、RecordHandler 依序處理）
 
 ### 5. **Dependency Injection（依賴注入）**
 - 全專案使用 DI 容器管理依賴關係
@@ -251,12 +241,15 @@ Redis
 - 測試覆蓋：領域邏輯、服務、工具類別
 - 框架：NUnit + NSubstitute
 
+### 整合測試
+- 位置：`/LittleFlowerBot.IntegrationTests`
+
 ### 測試組織
 ```
 LittleFlowerBotTests/
 ├── Models/
 │   ├── Game/ - 遊戲邏輯測試
-│   └── Cache/ - 快取測試
+│   └── Caches/ - 快取測試
 ├── Services/ - 服務測試
 ├── HealthChecks/ - 健康檢查測試
 └── Utils/ - 工具類別測試
@@ -269,13 +262,14 @@ LittleFlowerBotTests/
 ```
 Internet
     ↓
-Heroku (Platform)
+Render (Docker container)
     ↓
 LittleFlowerBot (Web App)
     ↓
-├── PostgreSQL (Database)
-└── Redis (Cache)
+MongoDB Atlas (Database)
 ```
+
+部署設定見 `render.yaml` 與 `Dockerfile`。
 
 ---
 

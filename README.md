@@ -2,17 +2,23 @@
 ![build](https://github.com/easylive1989/LittleFlowerBot/actions/workflows/dotnetcore.yml/badge.svg)
 [![BCH compliance](https://bettercodehub.com/edge/badge/easylive1989/LittleFlowerBot?branch=master)](https://bettercodehub.com/)
 
+一個基於 Line Messaging API 的小遊戲機器人，支援多種雙人 / 單人遊戲。
 
-### 註冊群組
-在某個群組加入LittleFlowerBot與LineNotify，在群組中輸入我要註冊並點擊回覆訊息中的連結，並關聯此群組。
 ![image](https://github.com/easylive1989/LittleFlowerBot/blob/master/Images/LittleFlowerBot%20Banner.png)
 
+## 開始使用
+
+1. 將 `LittleFlowerBot` 加為好友（或加進群組 / 聊天室）
+2. 直接輸入指令即可開始遊戲，例如 `玩五子棋`
+
+> 📖 詳細玩法請見 [HOW TO PLAY.md](./HOW%20TO%20PLAY.md)
+
 ### 遊戲列表
-完成群組綁定之後，輸入下列文字可進行遊戲：
-- 玩五子棋
 - 玩猜數字
-- 玩象棋
 - 玩井字遊戲
+- 玩五子棋
+- 玩象棋
+- 玩海戰棋
 
 # 系統相關
 
@@ -21,24 +27,24 @@
 ## 使用技術
 
 ### 核心框架
-- **.NET 10.0** - 最新的 .NET 平台
-- **ASP.NET Core** - Web API 框架（Minimal API 模式）
-- **Entity Framework Core 9.0** - ORM 框架
+- **.NET 10.0** - 應用程式框架
+- **ASP.NET Core** - Web API 框架
 
-### 資料庫與快取
-- **PostgreSQL** - 主要資料庫
-- **Redis** - 分散式快取（使用 StackExchange.Redis）
+### 資料庫
+- **MongoDB** - 主要資料庫（戰績與遊戲狀態）
 
 ### 外部服務
 - **Line Messaging API** - Line Bot 訊息處理
-- **Line Notify API** - 推播通知
+
+### 圖像渲染
+- **SkiaSharp** - 棋盤圖片渲染（海戰棋等）
 
 ### 測試
 - **NUnit 4.2** - 單元測試框架
 - **NSubstitute 5.3** - Mocking 框架
 
 ### 部署
-- **Heroku** - 雲端平台
+- **Render** - 雲端平台（Docker）
 
 ## 架構設計
 
@@ -64,31 +70,31 @@ LittleFlowerBot/
 ├── Middlewares/         # HTTP 中介軟體
 ├── HealthChecks/        # 健康檢查
 ├── Services/            # 應用服務
+│   └── EventHandler/   # Line Bot 事件處理器
 ├── Models/              # 領域模型與 DTOs
 │   ├── Game/           # 遊戲邏輯
 │   ├── Caches/         # 快取服務
 │   ├── Renderer/       # 渲染服務
 │   └── ...
 ├── Repositories/        # 資料存取層
-└── DbContexts/         # EF Core DbContext
+└── DbContexts/         # MongoDB Context
 ```
 
 ## API 端點
 
 ### 健康檢查
 - `GET /health` - 完整健康檢查（所有項目）
-- `GET /health/ready` - 就緒檢查（Kubernetes readiness probe）
-- `GET /health/live` - 存活檢查（Kubernetes liveness probe）
+- `GET /health/ready` - 就緒檢查（含 MongoDB 連線檢查）
+- `GET /health/live` - 存活檢查（僅應用程式狀態）
 
 ### Line Webhook
-- `POST /api/linebot` - Line Bot Webhook 端點
+- `POST /api/LineChat/Callback` - Line Bot Webhook 端點
 
 ## 開發指南
 
 ### 前置需求
 - .NET 10.0 SDK
-- PostgreSQL
-- Redis（選用，開發環境會自動使用記憶體快取）
+- MongoDB（本機 `mongodb://localhost:27017` 或 MongoDB Atlas）
 
 ### 本地開發
 
@@ -98,27 +104,22 @@ git clone https://github.com/easylive1989/LittleFlowerBot.git
 cd LittleFlowerBot
 ```
 
-2. 設定資料庫連線
+2. 設定 MongoDB 連線（其中一種方式）：
+
+**方式 A：本機 MongoDB（預設）**
+無需設定，`appsettings.Development.json` 已預設 `mongodb://localhost:27017`。
+
+**方式 B：使用 MongoDB Atlas**
 ```bash
-# 在 appsettings.Development.json 中設定
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=littleflowerbot;Username=postgres;Password=your_password"
-  }
-}
+export MONGODB_URI="mongodb+srv://user:password@cluster.xxxxx.mongodb.net/LittleFlowerBot?retryWrites=true&w=majority"
 ```
 
-3. 執行資料庫遷移
-```bash
-dotnet ef database update --project LittleFlowerBot
-```
-
-4. 啟動應用程式
+3. 啟動應用程式
 ```bash
 dotnet run --project LittleFlowerBot
 ```
 
-5. 執行測試
+4. 執行測試
 ```bash
 dotnet test
 ```
@@ -127,21 +128,19 @@ dotnet test
 
 ```bash
 cd LittleFlowerBot
-dotnet user-secrets set "LINE_CHANNEL_TOKEN" "your_line_channel_token"
-dotnet user-secrets set "LINE_NOTIFY_CLIENT_ID" "your_client_id"
-dotnet user-secrets set "LINE_NOTIFY_CLIENT_SECRET" "your_client_secret"
+dotnet user-secrets set "LineChannelToken" "your_line_channel_token"
 ```
 
 ## 功能特色
 
 ### ✅ 已實作功能
-- 🎮 多種遊戲支援（五子棋、象棋、井字遊戲、猜數字）
-- 🔔 Line Notify 通知整合
-- 💾 Redis 分散式快取
-- 📊 詳細的健康檢查端點
+- 🎮 多種遊戲支援（猜數字、井字遊戲、五子棋、象棋、海戰棋）
+- 💾 MongoDB 資料持久化（戰績與遊戲盤面）
+- 🖼️ SkiaSharp 棋盤圖片渲染
+- 📊 健康檢查端點（liveness / readiness / full）
 - 🛡️ 全域錯誤處理中介軟體
 - 📝 結構化日誌記錄
-- 🧪 完整的單元測試（78+ 測試）
+- 🧪 完整的單元測試
 
 ### 🎯 設計模式
 - Factory Pattern（遊戲工廠、渲染器工廠）
@@ -149,57 +148,27 @@ dotnet user-secrets set "LINE_NOTIFY_CLIENT_SECRET" "your_client_secret"
 - Strategy Pattern（不同的渲染策略）
 - Dependency Injection（全專案依賴注入）
 
-## 效能與監控
-
-### Health Check 回應範例
-
-```json
-{
-  "status": "Healthy",
-  "totalDuration": 45,
-  "timestamp": "2024-02-12T10:30:00Z",
-  "checks": {
-    "PostgreSQL": {
-      "status": "Healthy",
-      "duration": 12
-    },
-    "Application": {
-      "status": "Healthy",
-      "duration": 2,
-      "data": {
-        "version": "1.0.0",
-        "uptime": "2d 5h 30m",
-        "memoryUsedMB": 145
-      }
-    },
-    "Memory": {
-      "status": "Healthy",
-      "duration": 1,
-      "data": {
-        "allocatedMB": 128,
-        "gen0Collections": 15
-      }
-    }
-  }
-}
-```
-
 ## 部署
 
-本專案可以部署到 Heroku 或任何支援 .NET 的平台。
+本專案以 Docker 容器化部署，目前運行於 [Render](https://render.com/)。
 
-### Heroku 部署
+### Render 部署
 
-1. 設定環境變數
-```bash
-heroku config:set DATABASE_URL=postgres://...
-heroku config:set HEROKU_REDIS_MAUVE_URL=redis://...
-heroku config:set LINE_CHANNEL_TOKEN=...
+專案根目錄已包含 `render.yaml`（Blueprint）與 `Dockerfile`。
+
+**所需環境變數**：
+
+| Key | 說明 |
+|---|---|
+| `MONGODB_URI` | MongoDB 連線字串（必填） |
+| `LineChannelToken` | Line Bot Channel Access Token（必填） |
+| `BaseUrl` | 服務對外 URL（用於組合圖片連結） |
+| `ASPNETCORE_URLS` | `http://*:10000` |
+| `ASPNETCORE_ENVIRONMENT` | `Production` |
+
+部署完成後，記得到 Line Developers Console 設定 Webhook URL 為：
 ```
-
-2. 推送到 Heroku
-```bash
-git push heroku master
+https://<your-service>.onrender.com/api/LineChat/Callback
 ```
 
 ## 貢獻
