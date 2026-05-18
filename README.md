@@ -8,7 +8,10 @@
 
 ## 開始使用
 
-1. 將 `LittleFlowerBot` 加為好友（或加進群組 / 聊天室）
+1. 用 Line 掃描下方 QR Code 加 Bot 為好友（或加進群組 / 聊天室）：
+
+   <img src="./Images/qrcode.png" alt="加入好友 QR Code" width="240">
+
 2. 直接輸入指令即可開始遊戲，例如 `玩五子棋`
 
 > 📖 詳細玩法請見 [HOW TO PLAY.md](./HOW%20TO%20PLAY.md)

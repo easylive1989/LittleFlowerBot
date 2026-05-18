@@ -4,7 +4,10 @@
 
 ## 開始之前
 
-1. 將 `LittleFlowerBot` 加為 Line 好友
+1. 用 Line 掃描下方 QR Code 加 Bot 為好友：
+
+   <img src="./Images/qrcode.png" alt="加入好友 QR Code" width="240">
+
 2. 想跟朋友對戰：把 Bot 拉進**群組**或**多人聊天室**
 3. 想自己玩：直接私訊 Bot 也行（但對戰類遊戲需要兩位玩家）
 
